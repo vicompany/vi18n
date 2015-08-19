@@ -1,0 +1,22 @@
+{
+    "preset": "airbnb",
+    "esnext": false,
+    "disallowQuotedKeysInObjects": null,
+    "disallowMultipleVarDecl": null,
+    "requireTrailingComma": null,
+    "disallowTrailingComma": true,
+    "requireMultipleVarDecl": "onevar",
+    "requireCurlyBraces": [
+      "if",
+      "else",
+      "for",
+      "while",
+      "do",
+      "try",
+      "catch"
+    ],
+    "safeContextKeyword": "self",
+    "validateLineBreaks": null,
+    "validateQuoteMarks": "'",
+    "validateIndentation": "\t"
+}
