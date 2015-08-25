@@ -1,14 +1,13 @@
-define([
-	'promise'
-], function(promise) {
+define(function() {
 
 	'use strict';
-
-	promise.polyfill();
 
 	var instances = {};
 
 	function VI18N(locale, currency) {
+		locale = locale || 'nl-NL';
+		currency = currency || 'EUR';
+
 		this.locale = locale;
 		this.currency = currency;
 		this.formatters = {};
@@ -68,53 +67,56 @@ define([
 	};
 
 	// Static methods
-	VI18N.create = function(locale, currency) {
-		locale = locale || 'nl-NL';
-		currency = currency || 'EUR';
+	VI18N.create = function create(options) {
+		var locale = options.locale,
+			currency = options.currency,
+			callback = options.callback,
+			instance;
 
-		var instance = new VI18N(locale, currency);
+		if (typeof callback !== 'function') {
+			throw new Error('Callback should be defined');
+		}
 
-		instances[locale] = instance;
+		instance = new VI18N(locale, currency);
 
-		return VI18N.polyfill(instance);
+		instances[instance.getLocale()] = instance;
+
+		VI18N.polyfill(instance, callback);
 	};
 
-	VI18N.polyfill = function(instance) {
-		var locale = instance.getLocale();
+	VI18N.polyfill = function polyfill(instance, callback) {
 
-		return new Promise(function(resolve, reject) {
+		if (VI18N.isSupported()) {
+			return callback(null, instance.initialize());
+		}
 
-			if (VI18N.isSupported()) {
-				return resolve(instance.initialize());
+		// When not natively suppported, load the polyfill with locale data and resolve
+		require([
+			'intl',
+			'text!../bower_components/intl/locale-data/json/' + instance.getLocale() + '.json'
+		], function(Intl, json) {
+
+			if (!json) {
+				return callback(new Error('Could not load locale JSON data'));
 			}
 
-			// When not natively suppported, load the polyfill with locale data and resolve
-			require([
-				'intl',
-				'text!../bower_components/intl/locale-data/json/' + locale + '.json'
-			], function(Intl, json) {
+			// Parse and add the data
+			Intl.__addLocaleData(JSON.parse(json));
 
-				if (!json) {
-					return reject(new Error('Could not load locale JSON file'));
-				}
+			callback(null, instance.initialize());
 
-				// Parse and add the data
-				Intl.__addLocaleData(JSON.parse(json));
+		}, function(error) {
 
-				resolve(instance.initialize());
-			}, function(error) {
-
-				reject(error);
-			});
-
+			callback(error);
 		});
+
 	};
 
-	VI18N.get = function(locale) {
+	VI18N.get = function get(locale) {
 		return instances[locale];
 	};
 
-	VI18N.isSupported = function() {
+	VI18N.isSupported = function isSupported() {
 		return 'Intl' in window;
 	};
 

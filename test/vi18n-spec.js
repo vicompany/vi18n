@@ -9,17 +9,12 @@ function(VI18N) {
 
 		describe('VI18N.create()', function() {
 
-			var factory;
-
 			it('should have a static "create" factory method', function() {
 				expect(VI18N.create).toEqual(jasmine.any(Function));
 			});
 
-			it('should return a promise', function() {
-				factory = VI18N.create();
-
-				expect(factory).toEqual(jasmine.any(Promise));
-				expect(factory.then).toBeDefined();
+			it('should have a callback function as an argument', function() {
+				expect(VI18N.create).toThrowError();
 			});
 
 			it('should check and polyfill native browser support', function(done) {
@@ -28,30 +23,30 @@ function(VI18N) {
 				spyOn(VI18N, 'isSupported').and.callThrough();
 
 				VI18N
-					.create()
-					.then(function(instance) {
+					.create({
+						callback: function(error, instance) {
 
-						expect(VI18N.polyfill).toHaveBeenCalled();
-						expect(VI18N.isSupported).toHaveBeenCalled();
+							expect(VI18N.polyfill).toHaveBeenCalled();
+							expect(VI18N.isSupported).toHaveBeenCalled();
 
-					}, function(error) {
-						expect(error).toBeUndefined();
-						// fail(error);
-					})
-					.then(done);
+							done();
+						}
+				});
 			});
 
 			it('should eventually return an instance with Dutch defaults', function(done) {
 
 				VI18N
-					.create()
-					.then(function(instance) {
+					.create({
+						callback: function(error, instance) {
 
-						expect(instance).toBeDefined();
-						expect(instance.getLocale()).toBe('nl-NL');
-						expect(instance.getCurrency()).toBe('EUR');
+							expect(error).toBeNull();
+							expect(instance).toEqual(jasmine.any(VI18N));
+							expect(instance.getLocale()).toBe('nl-NL');
+							expect(instance.getCurrency()).toBe('EUR');
 
-						done();
+							done();
+						}
 					});
 			});
 
@@ -62,13 +57,17 @@ function(VI18N) {
 			it('should have a static "get" method to retrieve locale instances', function(done) {
 
 				VI18N
-					.create('nl-NL')
-					.then(function(instance) {
+					.create({
+						locale: 'en-GB',
+						currency: 'GPB',
+						callback: function(error, instance) {
 
-						expect(VI18N.get).toEqual(jasmine.any(Function));
-						expect(VI18N.get('nl-NL')).toEqual(instance);
+							expect(VI18N.get).toEqual(jasmine.any(Function));
+							expect(VI18N.get('en-GB')).toEqual(instance);
+							expect(VI18N.get('en-GB').getCurrency()).toEqual('GPB');
 
-						done();
+							done();
+						}
 					});
 			});
 
@@ -80,10 +79,13 @@ function(VI18N) {
 
 			beforeEach(function(done) {
 				VI18N
-					.create('nl-NL')
-					.then(function(instance) {
-						locale = instance;
-						done();
+					.create({
+						locale: 'nl-NL',
+						currency: 'EUR',
+						callback: function(error, instance) {
+							locale = instance;
+							done();
+						}
 					});
 			});
 
