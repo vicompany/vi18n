@@ -21,6 +21,11 @@ module.exports = function (grunt) {
 		},
 		pkg: grunt.file.readJSON('package.json'),
 		// banner: '/*! <%= pkg.title || pkg.name %> - Copyright (c) <%= grunt.template.today("yyyy-mm-dd") %> <%= pkg.author %> */\n',
+		bump: {
+			options: {
+				files: ['package.json', 'bower.json'],
+			}
+		},
 		jshint: {
 			dev: {
 				src: [
