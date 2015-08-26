@@ -6,6 +6,40 @@ module.exports = function (grunt) {
 
 	'use strict';
 
+	var rdefineEnd = /\}\s*?\);[^}\w]*$/,
+		convert = function(name, path, contents) { // Blatently stolen from jQuery: https://github.com/jquery/jquery/blob/master/build/tasks/build.js
+			// Convert var modules
+			if ( /.\/var\//.test( path ) ) {
+				contents = contents
+					.replace( /define\([\w\W]*?return/, "var " + (/var\/([\w-]+)/.exec(name)[1]) + " =" )
+					.replace( rdefineEnd, "" );
+
+			} else {
+				contents = contents
+					.replace( /\s*return\s+[^\}]+(\}\s*?\);[^\w\}]*)$/, "$1" )
+					// Multiple exports
+					.replace( /\s*exports\.\w+\s*=\s*\w+;/g, "" );
+
+				// Remove define wrappers, closure ends, and empty declarations
+				contents = contents
+					.replace( /define\([^{]*?{/, "" )
+					.replace( rdefineEnd, "" );
+
+				// Remove anything wrapped with
+				// /* ExcludeStart */ /* ExcludeEnd */
+				// or a single line directly after a // BuildExclude comment
+				contents = contents
+					.replace( /\/\*\s*ExcludeStart\s*\*\/[\w\W]*?\/\*\s*ExcludeEnd\s*\*\//ig, "" )
+					.replace( /\/\/\s*BuildExclude\n\r?[\w\W]*?\n\r?/ig, "" );
+
+				// Remove empty definitions
+				contents = contents
+					.replace( /define\(\[[^\]]*\]\)[\W\n]+$/, "" );
+			}
+
+			return contents;
+		};
+
 	grunt.initConfig({
 		paths: {
 			root: '.',
@@ -20,13 +54,15 @@ module.exports = function (grunt) {
 			}
 		},
 		pkg: grunt.file.readJSON('package.json'),
-		// banner: '/*! <%= pkg.title || pkg.name %> - Copyright (c) <%= grunt.template.today("yyyy-mm-dd") %> <%= pkg.author %> */\n',
+		banner: '/*! <%= pkg.title || pkg.name %> - Copyright (c) <%= grunt.template.today("yyyy-mm-dd") %> <%= pkg.author %> */\n',
 		bump: {
 			options: {
 				files: ['package.json', 'bower.json'],
 				commitFiles: ['package.json', 'bower.json'],
 				updateConfigs: ['pkg'],
-				push: false
+				push: false,
+				commit: false,
+				createTag: false
 			}
 		},
 		jshint: {
@@ -52,20 +88,23 @@ module.exports = function (grunt) {
 		},
 		requirejs: {
 			options: {
-				name: 'main',
+				name: 'vi18n',
 				baseUrl: '<%= paths.js.source %>',
 				mainConfigFile: '<%= paths.js.source %>/require-config.js',
 				keepBuildDir: true,
 				findNestedDependencies: true,
+				skipModuleInsertion: true,
 				logLevel: 3,
-				paths: {
-					// 'Intl': 'empty:' // TODO: exclude Intl polyfill in certain builds
-				}
+				wrap: {
+					startFile: ['<%= paths.js.source %>/umd-header.txt'],
+					endFile: ['<%= paths.js.source %>/umd-footer.txt']
+				},
+				onBuildWrite: convert
 			},
 			dev: {
 				options: {
 					optimize: 'none',
-					out: '<%= paths.js.dist %>/main.js'
+					out: '<%= paths.js.dist %>/<%= pkg.name %>.js'
 				}
 			},
 			dist: {
@@ -73,14 +112,12 @@ module.exports = function (grunt) {
 					optimize: 'uglify2',
 					generateSourceMaps: true,
 					preserveLicenseComments: false,
-					out: '<%= paths.js.dist %>/main.min.js',
+					out: '<%= paths.js.dist %>/<%= pkg.name %>.min.js',
 					uglify2: {
-						report: 'min',
 						compress: {
 							global_defs: {
 								DEBUG: false
 							},
-							dead_code: true,
 							drop_console: true
 						}
 					}
