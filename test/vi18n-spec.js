@@ -7,68 +7,61 @@ function(VI18N) {
 
 	describe('VI18N internationalization library', function() {
 
-		describe('VI18N.create()', function() {
+		beforeEach(function(done) {
 
-			it('should have a static "create" factory method', function() {
-				expect(VI18N.create).toEqual(jasmine.any(Function));
+			if (VI18N.isSupported()) {
+				return done();
+			}
+
+			// PhantomJS (Webkit), as used by grunt-contrib-jasmine, doesn't support the Internationalization API
+			require([
+				'intl',
+				'text!locale-data/nl-NL.json',
+				'text!locale-data/en-GB.json'
+			], function(Intl, dataNl, dataGb) {
+
+				// Parse and add the data
+				Intl.__addLocaleData(JSON.parse(dataNl));
+				Intl.__addLocaleData(JSON.parse(dataGb));
+
+				done();
 			});
 
-			it('should have a callback function as an argument', function() {
-				expect(VI18N.create).toThrowError();
-			});
+		});
 
-			it('should check and polyfill native browser support', function(done) {
+		describe('constructor', function() {
+			var locale;
 
-				spyOn(VI18N, 'polyfill').and.callThrough();
+			beforeEach(function() {
 				spyOn(VI18N, 'isSupported').and.callThrough();
 
-				VI18N
-					.create({
-						callback: function(error, instance) {
-
-							expect(VI18N.polyfill).toHaveBeenCalled();
-							expect(VI18N.isSupported).toHaveBeenCalled();
-
-							done();
-						}
-				});
+				locale = new VI18N();
 			});
 
-			it('should eventually return an instance with Dutch defaults', function(done) {
+			// TODO: error thrown on not supported
+			it('should check browser support for Intl', function() {
+				expect(VI18N.isSupported).toHaveBeenCalled();
+			});
 
-				VI18N
-					.create({
-						callback: function(error, instance) {
-
-							expect(error).toBeNull();
-							expect(instance).toEqual(jasmine.any(VI18N));
-							expect(instance.getLocale()).toBe('nl-NL');
-							expect(instance.getCurrency()).toBe('EUR');
-
-							done();
-						}
-					});
+			it('should return an instance with the Dutch locale as default', function() {
+				expect(locale.getLocale()).toBe('nl-NL');
+				expect(locale.getCurrency()).toBe('EUR');
 			});
 
 		});
 
 		describe('VI18N.get()', function() {
 
-			it('should have a static "get" method to retrieve locale instances', function(done) {
+			it('should be defined', function() {
+				expect(VI18N.get).toEqual(jasmine.any(Function));
+			});
 
-				VI18N
-					.create({
-						locale: 'en-GB',
-						currency: 'GPB',
-						callback: function(error, instance) {
+			it('should return locale instances', function() {
+				var en = new VI18N('en-GB', 'GPB'),
+					nl = new VI18N();
 
-							expect(VI18N.get).toEqual(jasmine.any(Function));
-							expect(VI18N.get('en-GB')).toEqual(instance);
-							expect(VI18N.get('en-GB').getCurrency()).toEqual('GPB');
-
-							done();
-						}
-					});
+				expect(VI18N.get('nl-NL')).toEqual(nl);
+				expect(VI18N.get('en-GB')).toEqual(en);
 			});
 
 		});
@@ -77,16 +70,8 @@ function(VI18N) {
 
 			var locale;
 
-			beforeEach(function(done) {
-				VI18N
-					.create({
-						locale: 'nl-NL',
-						currency: 'EUR',
-						callback: function(error, instance) {
-							locale = instance;
-							done();
-						}
-					});
+			beforeEach(function() {
+				locale = new VI18N('nl-NL', 'EUR');
 			});
 
 			describe('number', function() {
@@ -211,18 +196,6 @@ function(VI18N) {
 				});
 
 			});
-
-			/*xdescribe('format to other locales', function() {
-
-				it('should support fy_NL locale', function() {
-					expect(VI18N.hasLocaleSupport('fy-NL')).toBe(true);
-				});
-
-				it('should format 7 january 2016 to "1/7/2016" for the en-US locale', function() {
-					expect(locale.formatDate(date, 'en-US')).toBe('1/7/2016');
-				});
-
-			});*/
 
 		});
 
