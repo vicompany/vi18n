@@ -1,6 +1,5 @@
 .grunt
 node_modules
 bower_components
-dist
 *.sublime-workspace
 _SpecRunner.html
