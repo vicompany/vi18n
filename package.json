@@ -1,6 +1,6 @@
 {
   "name": "vi18n",
-  "version": "0.0.4",
+  "version": "0.0.3",
   "description": "Simple browser internationalization with fallback",
   "main": "",
   "scripts": {
