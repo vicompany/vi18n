@@ -47,6 +47,7 @@
 
 			this.formatters.number = new window.Intl.NumberFormat(locale);
 			this.formatters.currency = new window.Intl.NumberFormat(locale, { style: 'currency', currency: currency, minimumFractionDigits: 2, maximumFractionDigits: 2 });
+			this.formatters.percent = new window.Intl.NumberFormat(locale, { style: 'percent', maximumFractionDigits: 0 });
 			this.formatters.date = new window.Intl.DateTimeFormat(locale);
 		},
 
@@ -74,6 +75,17 @@
 			}
 
 			return this.formatters.currency.format(number);
+		},
+
+		formatPercent: function(number, options) {
+
+			if (typeof options === 'object') {
+				options.style = 'percent';
+
+				return new this.formatters.percent.constructor(this.getLocale(), options).format(number);
+			}
+
+			return this.formatters.percent.format(number);
 		},
 
 		// Format a date object to a locale string
