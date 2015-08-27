@@ -88,7 +88,7 @@ function(VI18N) {
 					expect(locale.formatNumber(1000000)).toBe('1.000.000');
 				});
 
-				describe('decimals default', function() {
+				describe('default decimals and rounding', function() {
 
 					it('should format 1.1211 to "1,1211"', function() {
 						expect(locale.formatNumber(1.1211)).toBe('1,121');
@@ -131,6 +131,67 @@ function(VI18N) {
 
 			});
 
+			describe('percent', function() {
+
+				it('should format 0.01 to "1%"', function() {
+					expect(locale.formatPercent(0.01)).toBe('1%');
+				});
+
+				it('should format 0.1 to "10%"', function() {
+					expect(locale.formatPercent(0.1)).toBe('10%');
+				});
+
+				it('should format 1 to "100%"', function() {
+					expect(locale.formatPercent(1)).toBe('100%');
+				});
+
+				describe('default decimals and rounding', function() {
+
+					it('should format 0.123 to "12%"', function() {
+						expect(locale.formatPercent(0.123)).toBe('12%');
+					});
+
+					it('should format 0.1234 to "12%"', function() {
+						expect(locale.formatPercent(0.1234)).toBe('12%');
+					});
+
+					it('should format 0.156 to "16%"', function() {
+						expect(locale.formatPercent(0.156)).toBe('16%');
+					});
+
+				});
+
+				describe('2 decimals option', function() {
+
+					var options = {
+						minimumFractionDigits: 2,
+						maximumFractionDigits: 2
+					};
+
+					it('should format 0.123 to "12,30%"', function() {
+						expect(locale.formatPercent(0.123, options)).toBe('12,30%');
+					});
+
+					it('should format 0.1234 to "12,34%"', function() {
+						expect(locale.formatPercent(0.1234, options)).toBe('12,34%');
+					});
+
+					it('should format 0.156 to "15,60%"', function() {
+						expect(locale.formatPercent(0.156, options)).toBe('15,60%');
+					});
+
+					it('should format 0.1567 to "15,67%"', function() {
+						expect(locale.formatPercent(0.1567, options)).toBe('15,67%');
+					});
+
+					it('should format 0.15678 to "15,68%"', function() {
+						expect(locale.formatPercent(0.15678, options)).toBe('15,68%');
+					});
+
+				});
+
+			});
+
 			describe('currency', function() {
 
 				it('should format 100 to "€ 100,00"', function() {
@@ -145,7 +206,7 @@ function(VI18N) {
 					expect(locale.formatCurrency(1000000)).toBe('€ 1.000.000,00');
 				});
 
-				describe('decimals rounding', function() {
+				describe('default decimals and rounding', function() {
 
 					it('should format 1.1211 to "€ 1,12"', function() {
 						expect(locale.formatCurrency(1.1211)).toBe('€ 1,12');
