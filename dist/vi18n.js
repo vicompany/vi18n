@@ -19,7 +19,7 @@
 	var locales = {};
 
 	function VI18N(locale, currency) {
-		// Fail fast in case the Intl isn't supported
+		// Fail fast when the Internationalization API isn't supported
 		if (!VI18N.isSupported()) {
 			throw new Error('window.Intl not supported, did you forget to include a polyfill?');
 		}
@@ -88,11 +88,11 @@
 
 	};
 
-	VI18N.get = function get(locale) {
+	VI18N.get = function(locale) {
 		return locales[locale];
 	};
 
-	VI18N.isSupported = function isSupported() {
+	VI18N.isSupported = function() {
 		return 'Intl' in window;
 	};
 
