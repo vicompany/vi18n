@@ -38,7 +38,6 @@ function(VI18N) {
 				locale = new VI18N();
 			});
 
-			// TODO: error thrown on not supported
 			it('should check browser support for Intl', function() {
 				expect(VI18N.isSupported).toHaveBeenCalled();
 			});
@@ -256,6 +255,68 @@ function(VI18N) {
 					expect(locale.formatTime(date)).toBe('3:15:45');
 				});
 
+			});
+
+		});
+
+		describe('getMonths()', function() {
+
+			var locale,
+				months;
+
+			beforeEach(function() {
+				locale = new VI18N('nl-NL', 'EUR');
+			});
+
+			it('should be defined', function() {
+				expect(locale.getMonths).toEqual(jasmine.any(Function));
+			});
+
+			it('should return an array with 12 months', function() {
+
+				months = locale.getMonths();
+
+				expect(months).toEqual(jasmine.any(Array));
+				expect(months.length).toBe(12);
+			});
+
+			it('should have january as first month', function() {
+				expect(months[0]).toMatch(/jan/i);
+			});
+
+			it('should have december as last month', function() {
+				expect(months[11]).toMatch(/dec/i);
+			});
+
+		});
+
+		describe('getDays()', function() {
+
+			var locale,
+				days;
+
+			beforeEach(function() {
+				locale = new VI18N('nl-NL', 'EUR');
+			});
+
+			it('should be defined', function() {
+				expect(locale.getMonths).toEqual(jasmine.any(Function));
+			});
+
+			it('should return an array with 7 days', function() {
+
+				days = locale.getDays();
+
+				expect(days).toEqual(jasmine.any(Array));
+				expect(days.length).toBe(7);
+			});
+
+			it('should have sunday as first day', function() {
+				expect(days[0]).toMatch(/zo/i);
+			});
+
+			it('should have saturday as last day', function() {
+				expect(days[6]).toMatch(/za/i);
 			});
 
 		});

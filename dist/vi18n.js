@@ -30,6 +30,8 @@
 		this.locale = locale;
 		this.currency = currency;
 		this.formatters = {};
+		this.months = {};
+		this.days = {};
 
 		// Keep track of this instance
 		locales[locale] = this;
@@ -78,7 +80,6 @@
 		},
 
 		formatPercent: function(number, options) {
-
 			if (typeof options === 'object') {
 				options.style = 'percent';
 
@@ -96,6 +97,46 @@
 
 		formatTime: function(date) {
 			return this.formatDate(date, { hour: '2-digit', minute: '2-digit',	second: '2-digit' });
+		},
+
+		getMonths: function(type) {
+			type = type || 'long';
+
+			return this.months[type] || (this.months[type] = (function(locale) {
+						var date = new Date(Date.UTC(2015, 0, 1)),
+							months = [],
+							i = 0;
+
+						for (; i < 12; i++) {
+							date.setMonth(i);
+							months[i] = locale.formatDate(date, { month: type });
+						}
+
+						return months;
+
+					})(this)
+
+				);
+		},
+
+		getDays: function(type) {
+			type = type || 'long';
+
+			return this.days[type] || (this.days[type] = (function(locale) {
+						var date = new Date(Date.UTC(1978, 0, 1)), // https://en.wikipedia.org/wiki/Common_year_starting_on_Sunday
+							days = [],
+							i = 1;
+
+						for (; i <= 7; i++) {
+							date.setUTCDate(i);
+							days.push(locale.formatDate(date, { weekday: type }));
+						}
+
+						return days;
+
+					})(this)
+
+				);
 		}
 
 	};
