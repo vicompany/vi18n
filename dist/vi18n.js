@@ -16,12 +16,16 @@
 
 	'use strict';
 
-	var locales = {};
+	var locales = {},
+		isObject = function(obj) {
+			// http://stackoverflow.com/a/4320789
+			return Object.prototype.toString.call(obj) === '[object Object]';
+		};
 
 	function VI18N(locale, currency) {
 		// Fail fast when the Internationalization API isn't supported
 		if (!VI18N.isSupported()) {
-			throw new Error('window.Intl not supported, did you forget to include a polyfill?');
+			throw new Error('Internationalization API (window.Intl) not supported, did you forget to include a polyfill?');
 		}
 
 		locale = locale || 'nl-NL';
@@ -64,7 +68,7 @@
 		// Format a number to a locale string
 		// For more information see https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/NumberFormat
 		formatNumber: function(number, options) {
-			return typeof options === 'object' ? new this.formatters.number.constructor(this.getLocale(), options).format(number) : this.formatters.number.format(number);
+			return isObject(options) ? new this.formatters.number.constructor(this.getLocale(), options).format(number) : this.formatters.number.format(number);
 		},
 
 		// Format a number to a locale currency string
@@ -80,7 +84,7 @@
 		},
 
 		formatPercent: function(number, options) {
-			if (typeof options === 'object') {
+			if (isObject(options)) {
 				options.style = 'percent';
 
 				return new this.formatters.percent.constructor(this.getLocale(), options).format(number);
@@ -92,7 +96,7 @@
 		// Format a date object to a locale string
 		// For more information see https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/DateTimeFormat
 		formatDate: function(date, options) {
-			return typeof options === 'object' ? new this.formatters.date.constructor(this.getLocale(), options).format(date) : this.formatters.date.format(date);
+			return isObject(options) ? new this.formatters.date.constructor(this.getLocale(), options).format(date) : this.formatters.date.format(date);
 		},
 
 		formatTime: function(date) {
