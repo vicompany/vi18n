@@ -5,7 +5,7 @@ Simple number, currency, type and date formatters based on the [Internationaliza
 ## Requirements
 
 * A [polyfill](https://github.com/andyearnshaw/Intl.js) when supporting [older browsers](http://caniuse.com/#feat=internationalization).
-  * You can also use the Financial Times polyfill service at https://cdn.polyfill.io.
+* Or use the Financial Times polyfill service at https://cdn.polyfill.io.
 
 ##Installation
 
@@ -18,7 +18,7 @@ define(['vi18n'], function(VI18N) {
 
   var de = new VI18N('de-DE', 'EUR');
 
-  de.formatCurrency(12.50); // "€ 12,50
+  de.formatCurrency(12.50); // € 12,50
 
 });
 ```
