@@ -97,7 +97,7 @@ function(VI18N) {
 						expect(locale.formatNumber(1.1293)).toBe('1,129');
 					});
 
-					it('should format 1.1298 to "1,123"', function() {
+					it('should format 1.1298 to "1,13"', function() {
 						expect(locale.formatNumber(1.1298)).toBe('1,13');
 					});
 
