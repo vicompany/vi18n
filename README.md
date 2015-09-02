@@ -37,7 +37,7 @@ uk.formatCurrency(12.50); // £12.50
 nl.formatCurrency(12.50, 'JPY'); // JP¥ 12,50
 uk.formatCurrency(12.50, 'JPY'); // ¥12.50
 
-// And without currency symbol
+// Or without currency symbol
 nl.formatCurrency(12.50, false); // 12,50
 uk.formatCurrency(12.50, false); // 12.50
 ```
@@ -63,7 +63,7 @@ uk.formatTime(date); // 12:38:09
 
 ```javascript
 
-// Possible representation are "narrow", "short", "long" (default).
+// Possible representations are "narrow", "short" or "long" (default).
 
 uk.getMonths()          // [ "January", "February", "March", etc. ]
 uk.getMonths('short')   // [ "Jan", "Feb", "Mar", etc. ]
