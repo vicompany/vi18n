@@ -26,17 +26,14 @@ define(function() {
 		// Keep track of this instance
 		locales[locale] = this;
 
-		this.initialize();
+		this.initialize(locale, currency);
 	}
 
 	VI18N.prototype = {
 
 		constructor: VI18N,
 
-		initialize: function() {
-			var locale = this.getLocale(),
-				currency =  this.getCurrency();
-
+		initialize: function(locale, currency) {
 			this.formatters.number = new window.Intl.NumberFormat(locale);
 			this.formatters.currency = new window.Intl.NumberFormat(locale, { style: 'currency', currency: currency, minimumFractionDigits: 2, maximumFractionDigits: 2 });
 			this.formatters.percent = new window.Intl.NumberFormat(locale, { style: 'percent', maximumFractionDigits: 0 });
