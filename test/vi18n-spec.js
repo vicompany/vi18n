@@ -73,7 +73,7 @@ function(VI18N) {
 				locale = new VI18N('nl-NL', 'EUR');
 			});
 
-			describe('number', function() {
+			describe('formatNumber()', function() {
 
 				it('should format 100 to "100"', function() {
 					expect(locale.formatNumber(100)).toBe('100');
@@ -130,7 +130,7 @@ function(VI18N) {
 
 			});
 
-			describe('percent', function() {
+			describe('formatPercent()', function() {
 
 				it('should format 0.01 to "1%"', function() {
 					expect(locale.formatPercent(0.01)).toBe('1%');
@@ -191,7 +191,7 @@ function(VI18N) {
 
 			});
 
-			describe('currency', function() {
+			describe('formatCurrency()', function() {
 
 				it('should format 100 to "€ 100,00"', function() {
 					expect(locale.formatCurrency(100)).toBe('€ 100,00');
@@ -243,7 +243,7 @@ function(VI18N) {
 
 			});
 
-			describe('date and time', function() {
+			describe('formatDate()', function() {
 
 				var date = new Date(Date.UTC(2016, 0, 7, 2, 15, 45));
 
@@ -251,6 +251,13 @@ function(VI18N) {
 					expect(locale.formatDate(date)).toBe('7-1-2016');
 				});
 
+			});
+
+			describe('formatTime()', function() {
+
+				var date = new Date(Date.UTC(2016, 0, 7, 2, 15, 45));
+
+				// Bug in the Intl polyfill: https://github.com/andyearnshaw/Intl.js/issues/128
 				xit('should format 15 past 3 and 45 seconds to "3:15:45"', function() {
 					expect(locale.formatTime(date)).toBe('3:15:45');
 				});
@@ -317,6 +324,50 @@ function(VI18N) {
 
 			it('should have saturday as last day', function() {
 				expect(days[6]).toMatch(/za/i);
+			});
+
+		});
+
+		describe('getDecimalSeparator()', function() {
+
+			var locale,
+				separator;
+
+			beforeEach(function() {
+				locale = new VI18N('nl-NL', 'EUR');
+			});
+
+			it('should be defined', function() {
+				expect(locale.getDecimalSeparator).toEqual(jasmine.any(Function));
+			});
+
+			it('should return a string', function() {
+				separator = locale.getDecimalSeparator();
+
+				expect(separator).toEqual(jasmine.any(String));
+				expect(separator).toBe(',');
+			});
+
+		});
+
+		describe('getThousandSeparator()', function() {
+
+			var locale,
+				separator;
+
+			beforeEach(function() {
+				locale = new VI18N('nl-NL', 'EUR');
+			});
+
+			it('should be defined', function() {
+				expect(locale.getThousandSeparator).toEqual(jasmine.any(Function));
+			});
+
+			it('should return a string', function() {
+				separator = locale.getThousandSeparator();
+
+				expect(separator).toEqual(jasmine.any(String));
+				expect(separator).toBe('.');
 			});
 
 		});
