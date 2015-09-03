@@ -22,6 +22,8 @@ define(function() {
 		this.formatters = {};
 		this.months = {};
 		this.days = {};
+		this.decimalSeparator = null;
+		this.thousandSeparator = null;
 
 		// Keep track of this instance
 		locales[locale] = this;
@@ -86,44 +88,57 @@ define(function() {
 			return this.formatDate(date, { hour: '2-digit', minute: '2-digit',	second: '2-digit' });
 		},
 
+		// Assume it is always one character
+		// https://en.wikipedia.org/wiki/Decimal_mark
+		getDecimalSeparator: function() {
+			return this.decimalSeparator || (this.decimalSeparator = this.formatNumber(1.1).charAt(1));
+		},
+
+		getThousandSeparator: function() {
+			return this.thousandSeparator || (this.thousandSeparator = (function(self) {
+						var separator = self.formatNumber(1000).charAt(1);
+
+						// When the separator is not a number (e.g. the decimal point in '1.000')
+						// return the separator, otherwise return an empty string
+						return isNaN(parseInt(separator, 10)) ? separator : '';
+
+					})(this));
+		},
+
 		getMonths: function(type) {
 			type = type || 'long';
 
-			return this.months[type] || (this.months[type] = (function(locale) {
+			return this.months[type] || (this.months[type] = (function(self) {
 						var date = new Date(Date.UTC(2015, 0, 1)),
 							months = [],
 							i = 0;
 
 						for (; i < 12; i++) {
 							date.setMonth(i);
-							months[i] = locale.formatDate(date, { month: type });
+							months[i] = self.formatDate(date, { month: type });
 						}
 
 						return months;
 
-					})(this)
-
-				);
+					})(this));
 		},
 
 		getDays: function(type) {
 			type = type || 'long';
 
-			return this.days[type] || (this.days[type] = (function(locale) {
+			return this.days[type] || (this.days[type] = (function(self) {
 						var date = new Date(Date.UTC(1978, 0, 1)), // https://en.wikipedia.org/wiki/Common_year_starting_on_Sunday
 							days = [],
 							i = 1;
 
 						for (; i <= 7; i++) {
 							date.setUTCDate(i);
-							days.push(locale.formatDate(date, { weekday: type }));
+							days.push(self.formatDate(date, { weekday: type }));
 						}
 
 						return days;
 
-					})(this)
-
-				);
+					})(this));
 		}
 
 	};
