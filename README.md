@@ -1,5 +1,7 @@
 # VI18N
 
+[![Build Status](https://travis-ci.org/vicompany/vi18n.svg)](https://travis-ci.org/vicompany/vi18n)
+
 Simple number, currency, type and date formatters based on the [Internationalization API](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Intl).
 
 ## Requirements
