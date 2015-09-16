@@ -36,12 +36,16 @@ nl.formatCurrency(12.50); // '€ 12,50'
 uk.formatCurrency(12.50); // '£12.50'
 
 // In another currency
-nl.formatCurrency(12.50, 'JPY'); // 'JP¥ 12,50'
-uk.formatCurrency(12.50, 'JPY'); // '¥12.50'
+nl.formatCurrency(12.50, { currency: 'JPY' }); // 'JP¥ 12,50'
+uk.formatCurrency(12.50, { currency: 'JPY' }); // '¥12.50'
 
-// Or without currency symbol
-nl.formatCurrency(12.50, false); // '12,50'
-uk.formatCurrency(12.50, false); // '12.50'
+// Without currency symbol
+nl.formatCurrency(12.50, { currency: false }); // '12,50'
+uk.formatCurrency(12.50, { currency: false }); // '12.50'
+
+// or without decimals
+nl.formatCurrency(12.50, { minimumFractionDigits: 0, maximumFractionDigits: 0 }); // '€ 12'
+uk.formatCurrency(12.50, { currency: 'JPY', minimumFractionDigits: 0, maximumFractionDigits: 0 }); // '¥12'
 ```
 
 ###Percent formatting
