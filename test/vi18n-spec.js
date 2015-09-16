@@ -103,7 +103,7 @@ function(VI18N) {
 
 				});
 
-				describe('2 decimals option', function() {
+				describe('two decimals option', function() {
 
 					var options = {
 						minimumFractionDigits: 2,
@@ -160,7 +160,7 @@ function(VI18N) {
 
 				});
 
-				describe('2 decimals option', function() {
+				describe('two decimals option', function() {
 
 					var options = {
 						minimumFractionDigits: 2,
@@ -217,6 +217,26 @@ function(VI18N) {
 
 					it('should format 1.1298 to "€ 1,13"', function() {
 						expect(locale.formatCurrency(1.1298)).toBe('€ 1,13');
+					});
+
+				});
+
+				describe('zero decimals option', function() {
+
+					var options = {
+						maximumFractionDigits: 0
+					};
+
+					it('should format 1 to "€ 1"', function() {
+						expect(locale.formatCurrency(1, options)).toBe('€ 1');
+					});
+
+					it('should format 1.1211 to "€ 1"', function() {
+						expect(locale.formatCurrency(1.1211, options)).toBe('€ 1');
+					});
+
+					it('should format 1000 to "€ 1.000"', function() {
+						expect(locale.formatCurrency(1000, options)).toBe('€ 1.000');
 					});
 
 				});
