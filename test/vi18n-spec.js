@@ -103,7 +103,7 @@ function(VI18N) {
 
 				});
 
-				describe('2 decimals option', function() {
+				describe('two decimals option', function() {
 
 					var options = {
 						minimumFractionDigits: 2,
@@ -160,7 +160,7 @@ function(VI18N) {
 
 				});
 
-				describe('2 decimals option', function() {
+				describe('two decimals option', function() {
 
 					var options = {
 						minimumFractionDigits: 2,
@@ -221,22 +221,56 @@ function(VI18N) {
 
 				});
 
-				describe('without currency symbol', function() {
+				describe('zero decimals option', function() {
 
-					it('should format 1.1298 to "1,13"', function() {
-						expect(locale.formatCurrency(1.1298, false)).toBe('1,13');
+					var options = {
+						minimumFractionDigits: 0,
+						maximumFractionDigits: 0
+					};
+
+					it('should format 1 to "€ 1"', function() {
+						expect(locale.formatCurrency(1, options)).toBe('€ 1');
+					});
+
+					it('should format 1.1211 to "€ 1"', function() {
+						expect(locale.formatCurrency(1.1211, options)).toBe('€ 1');
+					});
+
+					it('should format 1000 to "€ 1.000"', function() {
+						expect(locale.formatCurrency(1000, options)).toBe('€ 1.000');
 					});
 
 				});
 
-				describe('other currency symbols', function() {
+				describe('currency "false" option', function() {
 
-					it('should format 100 US dollars to "US$ 100,00"', function() {
-						expect(locale.formatCurrency(100, 'USD')).toBe('US$ 100,00');
+					var options = {
+						currency: false
+					};
+
+					it('should format 1.1298 to "1,13"', function() {
+						expect(locale.formatCurrency(1.1298, options)).toBe('1,13');
 					});
 
-					it('should format 100 Japanese yen to "JP¥ 100,00"', function() {
-						expect(locale.formatCurrency(100, 'JPY')).toBe('JP¥ 100,00');
+				});
+
+				describe('other currencies', function() {
+
+					var usd = {
+							currency: 'USD'
+						},
+						yen = {
+							currency: 'JPY',
+							minimumFractionDigits: 0,
+							maximumFractionDigits: 0
+						};
+
+					it('should format 100 US dollars to "US$ 100,00"', function() {
+						expect(locale.formatCurrency(100, usd)).toBe('US$ 100,00');
+					});
+
+					it('should format 100 Japanese yen to "JP¥ 100"', function() {
+						expect(locale.formatCurrency(100, yen)).toBe('JP¥ 100');
 					});
 
 				});

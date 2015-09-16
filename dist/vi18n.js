@@ -65,18 +65,30 @@
 		},
 
 		// Format a number to a locale string
-		// For more information see https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/NumberFormat
+		// For more information about the options see https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/NumberFormat
 		formatNumber: function(number, options) {
 			return isObject(options) ? new this.formatters.number.constructor(this.getLocale(), options).format(number) : this.formatters.number.format(number);
 		},
 
 		// Format a number to a locale currency string
-		// For more information see https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/NumberFormat
-		formatCurrency: function(number, currency) {
-			if (currency && typeof currency === 'string') {
-				return new this.formatters.currency.constructor(this.getLocale(), { style: 'currency', currency: currency, minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(number);
-			} else if (currency === false) {
-				return this.formatNumber(number, { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+		// For more information about the options see https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/NumberFormat
+		formatCurrency: function(number, options) {
+			if (isObject(options)) {
+				// Set decimal defaults
+				options.minimumFractionDigits = typeof options.minimumFractionDigits === 'number' ? options.minimumFractionDigits : 2;
+				options.maximumFractionDigits = typeof options.maximumFractionDigits === 'number' ? options.maximumFractionDigits : 2;
+
+				// Hide currency symbol
+				if (options.currency === false) {
+					delete options.currency;
+
+					return this.formatNumber(number, options);
+				}
+
+				options.style = 'currency';
+				options.currency = options.currency || this.getCurrency();
+
+				return new this.formatters.currency.constructor(this.getLocale(), options).format(number);
 			}
 
 			return this.formatters.currency.format(number);
@@ -93,7 +105,7 @@
 		},
 
 		// Format a date object to a locale string
-		// For more information see https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/DateTimeFormat
+		// For more information about the options see https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/DateTimeFormat
 		formatDate: function(date, options) {
 			return isObject(options) ? new this.formatters.date.constructor(this.getLocale(), options).format(date) : this.formatters.date.format(date);
 		},
