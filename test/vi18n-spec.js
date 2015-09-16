@@ -224,6 +224,7 @@ function(VI18N) {
 				describe('zero decimals option', function() {
 
 					var options = {
+						minimumFractionDigits: 0,
 						maximumFractionDigits: 0
 					};
 
@@ -241,22 +242,35 @@ function(VI18N) {
 
 				});
 
-				describe('without currency symbol', function() {
+				describe('currency "false" option', function() {
+
+					var options = {
+						currency: false
+					};
 
 					it('should format 1.1298 to "1,13"', function() {
-						expect(locale.formatCurrency(1.1298, false)).toBe('1,13');
+						expect(locale.formatCurrency(1.1298, options)).toBe('1,13');
 					});
 
 				});
 
-				describe('other currency symbols', function() {
+				describe('other currencies', function() {
+
+					var usd = {
+							currency: 'USD'
+						},
+						yen = {
+							currency: 'JPY',
+							minimumFractionDigits: 0,
+							maximumFractionDigits: 0
+						};
 
 					it('should format 100 US dollars to "US$ 100,00"', function() {
-						expect(locale.formatCurrency(100, 'USD')).toBe('US$ 100,00');
+						expect(locale.formatCurrency(100, usd)).toBe('US$ 100,00');
 					});
 
-					it('should format 100 Japanese yen to "JP¥ 100,00"', function() {
-						expect(locale.formatCurrency(100, 'JPY')).toBe('JP¥ 100,00');
+					it('should format 100 Japanese yen to "JP¥ 100"', function() {
+						expect(locale.formatCurrency(100, yen)).toBe('JP¥ 100');
 					});
 
 				});
