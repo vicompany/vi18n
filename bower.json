@@ -1,6 +1,6 @@
 {
   "name": "vi18n",
-  "version": "0.1.1",
+  "version": "0.2.0",
   "dependencies": {
     "requirejs": "~2.1.20",
     "text": "requirejs/text#~2.0.14",
