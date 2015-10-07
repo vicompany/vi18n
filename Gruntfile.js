@@ -51,7 +51,8 @@ module.exports = function (grunt) {
 				source: '<%= paths.root %>/src',
 				test: '<%= paths.root %>/test',
 				dist: '<%= paths.root %>/dist'
-			}
+			},
+			coverage: '<%= paths.root %>/coverage'
 		},
 		pkg: grunt.file.readJSON('package.json'),
 		banner: '/*! <%= pkg.title || pkg.name %> - Copyright (c) <%= grunt.template.today("yyyy-mm-dd") %> <%= pkg.author %> */\n',
@@ -122,29 +123,15 @@ module.exports = function (grunt) {
 				src: '<%= paths.js.source %>/vi18n.js',
 				options: {
 					specs: '<%= paths.js.test %>/*-spec.js',
-					template: require('grunt-template-jasmine-requirejs'),
-					keepRunner: true,
-					templateOptions: {
-						requireConfigFile: '<%= paths.js.source %>/require-config.js',
-						requireConfig: {
-							baseUrl: '<%= paths.js.source %>'
-						}
-					}
-				}
-			},
-			coverage: {
-				src: '<%= paths.js.source %>/vi18n.js',
-				options: {
-					specs: '<%= paths.js.test %>/*-spec.js',
 					keepRunner: true,
 					template: require('grunt-template-jasmine-istanbul'),
 					templateOptions: {
-						coverage: 'coverage/coverage.json',
+						coverage: '<%= paths.coverage %>/coverage.json',
 						report: [
 							{
 								type: 'html',
 								options: {
-									dir: 'coverage/html'
+									dir: '<%= paths.coverage %>/html'
 								}
 							},
 							{
@@ -153,13 +140,17 @@ module.exports = function (grunt) {
 						],
 						template: require('grunt-template-jasmine-requirejs'),
 						templateOptions: {
-							requireConfigFile: '<%= paths.js.source %>/require-config.js',
 							requireConfig: {
 								baseUrl: '.grunt/grunt-contrib-jasmine/src',
 								paths: {
 									'text':			'../../../bower_components/text/text',
 									'intl':			'../../../bower_components/intl/dist/Intl.min',
 									'locale-data':	'../../../bower_components/intl/locale-data/json'
+								},
+								shim: {
+									intl: {
+										exports: 'Intl' // AMD support has been removed, see: https://github.com/andyearnshaw/Intl.js/issues/132
+									}
 								}
 							}
 						}

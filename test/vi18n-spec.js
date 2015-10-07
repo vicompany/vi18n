@@ -78,42 +78,9 @@ function(VI18N) {
 
 		});
 
-		describe('formatters', function() {
-
-			/*beforeEach(function() {
-				this.locale = new VI18N('nl-NL', 'EUR');
-			});*/
-
-			describe('formatDate()', function() {
-
-				var date = new Date(Date.UTC(2016, 0, 7, 2, 15, 45));
-
-				it('should format 7 january 2016 to "7-1-2016"', function() {
-					expect(this.locale.formatDate(date)).toBe('7-1-2016');
-				});
-
-			});
-
-			describe('formatTime()', function() {
-
-				var date = new Date(Date.UTC(2016, 0, 7, 2, 15, 45));
-
-				// Bug in the Intl polyfill: https://github.com/andyearnshaw/Intl.js/issues/128
-				xit('should format 15 past 3 and 45 seconds to "3:15:45"', function() {
-					expect(this.locale.formatTime(date)).toBe('3:15:45');
-				});
-
-			});
-
-		});
-
 		describe('getMonths()', function() {
 
 			var months;
-
-			/*beforeEach(function() {
-				this.locale = new VI18N('nl-NL', 'EUR');
-			});*/
 
 			it('should be defined', function() {
 				expect(this.locale.getMonths).toEqual(jasmine.any(Function));
@@ -141,10 +108,6 @@ function(VI18N) {
 
 			var days;
 
-			/*beforeEach(function() {
-				this.locale = new VI18N('nl-NL', 'EUR');
-			});*/
-
 			it('should be defined', function() {
 				expect(this.locale.getMonths).toEqual(jasmine.any(Function));
 			});
@@ -171,10 +134,6 @@ function(VI18N) {
 
 			var separator;
 
-			/*beforeEach(function() {
-				this.locale = new VI18N('nl-NL', 'EUR');
-			});*/
-
 			it('should be defined', function() {
 				expect(this.locale.getDecimalSeparator).toEqual(jasmine.any(Function));
 			});
@@ -191,10 +150,6 @@ function(VI18N) {
 		describe('getThousandSeparator()', function() {
 
 			var separator;
-
-			/*beforeEach(function() {
-				this.locale = new VI18N('nl-NL', 'EUR');
-			});*/
 
 			it('should be defined', function() {
 				expect(this.locale.getThousandSeparator).toEqual(jasmine.any(Function));
