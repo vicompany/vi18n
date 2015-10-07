@@ -51,7 +51,8 @@ module.exports = function (grunt) {
 				source: '<%= paths.root %>/src',
 				test: '<%= paths.root %>/test',
 				dist: '<%= paths.root %>/dist'
-			}
+			},
+			coverage: '<%= paths.root %>/coverage'
 		},
 		pkg: grunt.file.readJSON('package.json'),
 		banner: '/*! <%= pkg.title || pkg.name %> - Copyright (c) <%= grunt.template.today("yyyy-mm-dd") %> <%= pkg.author %> */\n',
@@ -112,29 +113,46 @@ module.exports = function (grunt) {
 					optimize: 'uglify2',
 					generateSourceMaps: true,
 					preserveLicenseComments: false,
-					out: '<%= paths.js.dist %>/<%= pkg.name %>.min.js',
-					uglify2: {
-						compress: {
-							global_defs: {
-								DEBUG: false
-							},
-							drop_console: true
-						}
-					}
+					out: '<%= paths.js.dist %>/<%= pkg.name %>.min.js'
 				}
 			}
 		},
 		jasmine: {
 			// To debug use: grunt jasmine -v -d 9
 			dev: {
+				src: '<%= paths.js.source %>/vi18n.js',
 				options: {
 					specs: '<%= paths.js.test %>/*-spec.js',
-					template: require('grunt-template-jasmine-requirejs'),
 					keepRunner: true,
+					template: require('grunt-template-jasmine-istanbul'),
 					templateOptions: {
-						requireConfigFile: '<%= paths.js.source %>/require-config.js',
-						requireConfig: {
-							baseUrl: '<%= paths.js.source %>'
+						coverage: '<%= paths.coverage %>/coverage.json',
+						report: [
+							{
+								type: 'html',
+								options: {
+									dir: '<%= paths.coverage %>/html'
+								}
+							},
+							{
+								type: 'text-summary'
+							}
+						],
+						template: require('grunt-template-jasmine-requirejs'),
+						templateOptions: {
+							requireConfig: {
+								baseUrl: '.grunt/grunt-contrib-jasmine/src',
+								paths: {
+									'text':			'../../../bower_components/text/text',
+									'intl':			'../../../bower_components/intl/dist/Intl.min',
+									'locale-data':	'../../../bower_components/intl/locale-data/json'
+								},
+								shim: {
+									intl: {
+										exports: 'Intl' // AMD support has been removed, see: https://github.com/andyearnshaw/Intl.js/issues/132
+									}
+								}
+							}
 						}
 					}
 				}
@@ -142,7 +160,7 @@ module.exports = function (grunt) {
 		},
 		watch: {
 			grunt: {
-				files: [ 'Gruntfile.js'],
+				files: ['Gruntfile.js'],
 				options: {
 					reload: true
 				}
@@ -161,7 +179,7 @@ module.exports = function (grunt) {
 	// Load all NPM installed grunt tasks from the package.json
 	// Except the 'grunt-template-jasmine-requirejs' task
 	require('load-grunt-tasks')(grunt, {
-		pattern: ['grunt-*', '!grunt-template-jasmine-requirejs']
+		pattern: ['grunt-*', '!grunt-template-jasmine-*']
 	});
 
 	grunt.registerTask('test', ['jshint', 'jscs', 'jasmine']);
