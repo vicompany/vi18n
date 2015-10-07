@@ -112,29 +112,51 @@ module.exports = function (grunt) {
 					optimize: 'uglify2',
 					generateSourceMaps: true,
 					preserveLicenseComments: false,
-					out: '<%= paths.js.dist %>/<%= pkg.name %>.min.js',
-					uglify2: {
-						compress: {
-							global_defs: {
-								DEBUG: false
-							},
-							drop_console: true
-						}
-					}
+					out: '<%= paths.js.dist %>/<%= pkg.name %>.min.js'
 				}
 			}
 		},
 		jasmine: {
 			// To debug use: grunt jasmine -v -d 9
-			dev: {
+			// dev: {
+			// 	src: '<%= paths.js.source %>/vi18n.js',
+			// 	options: {
+			// 		specs: '<%= paths.js.test %>/*-spec.js',
+			// 		template: require('grunt-template-jasmine-requirejs'),
+			// 		keepRunner: true,
+			// 		templateOptions: {
+			// 			requireConfigFile: '<%= paths.js.source %>/require-config.js',
+			// 			requireConfig: {
+			// 				baseUrl: '<%= paths.js.source %>'
+			// 			}
+			// 		}
+			// 	}
+			// },
+			coverage: {
+				src: '<%= paths.js.source %>/vi18n.js',
 				options: {
 					specs: '<%= paths.js.test %>/*-spec.js',
-					template: require('grunt-template-jasmine-requirejs'),
+					template: require('grunt-template-jasmine-istanbul'),
 					keepRunner: true,
 					templateOptions: {
-						requireConfigFile: '<%= paths.js.source %>/require-config.js',
-						requireConfig: {
-							baseUrl: '<%= paths.js.source %>'
+						coverage: 'coverage/coverage.json',
+						report: [
+							{
+								type: 'html',
+								options: {
+									dir: 'coverage/html'
+								}
+							},
+							{
+								type: 'text-summary'
+							}
+						],
+						template: require('grunt-template-jasmine-requirejs'),
+						templateOptions: {
+							requireConfigFile: '<%= paths.js.source %>/require-config.js',
+							requireConfig: {
+								baseUrl: '<%= paths.js.source %>'
+							}
 						}
 					}
 				}
@@ -142,7 +164,7 @@ module.exports = function (grunt) {
 		},
 		watch: {
 			grunt: {
-				files: [ 'Gruntfile.js'],
+				files: ['Gruntfile.js'],
 				options: {
 					reload: true
 				}
@@ -161,7 +183,7 @@ module.exports = function (grunt) {
 	// Load all NPM installed grunt tasks from the package.json
 	// Except the 'grunt-template-jasmine-requirejs' task
 	require('load-grunt-tasks')(grunt, {
-		pattern: ['grunt-*', '!grunt-template-jasmine-requirejs']
+		pattern: ['grunt-*', '!grunt-template-jasmine-*']
 	});
 
 	grunt.registerTask('test', ['jshint', 'jscs', 'jasmine']);
