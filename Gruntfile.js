@@ -118,26 +118,26 @@ module.exports = function (grunt) {
 		},
 		jasmine: {
 			// To debug use: grunt jasmine -v -d 9
-			// dev: {
-			// 	src: '<%= paths.js.source %>/vi18n.js',
-			// 	options: {
-			// 		specs: '<%= paths.js.test %>/*-spec.js',
-			// 		template: require('grunt-template-jasmine-requirejs'),
-			// 		keepRunner: true,
-			// 		templateOptions: {
-			// 			requireConfigFile: '<%= paths.js.source %>/require-config.js',
-			// 			requireConfig: {
-			// 				baseUrl: '<%= paths.js.source %>'
-			// 			}
-			// 		}
-			// 	}
-			// },
+			dev: {
+				src: '<%= paths.js.source %>/vi18n.js',
+				options: {
+					specs: '<%= paths.js.test %>/*-spec.js',
+					template: require('grunt-template-jasmine-requirejs'),
+					keepRunner: true,
+					templateOptions: {
+						requireConfigFile: '<%= paths.js.source %>/require-config.js',
+						requireConfig: {
+							baseUrl: '<%= paths.js.source %>'
+						}
+					}
+				}
+			},
 			coverage: {
 				src: '<%= paths.js.source %>/vi18n.js',
 				options: {
 					specs: '<%= paths.js.test %>/*-spec.js',
-					template: require('grunt-template-jasmine-istanbul'),
 					keepRunner: true,
+					template: require('grunt-template-jasmine-istanbul'),
 					templateOptions: {
 						coverage: 'coverage/coverage.json',
 						report: [
@@ -155,7 +155,12 @@ module.exports = function (grunt) {
 						templateOptions: {
 							requireConfigFile: '<%= paths.js.source %>/require-config.js',
 							requireConfig: {
-								baseUrl: '<%= paths.js.source %>'
+								baseUrl: '.grunt/grunt-contrib-jasmine/src',
+								paths: {
+									'text':			'../../../bower_components/text/text',
+									'intl':			'../../../bower_components/intl/dist/Intl.min',
+									'locale-data':	'../../../bower_components/intl/locale-data/json'
+								}
 							}
 						}
 					}
