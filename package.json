@@ -9,8 +9,7 @@
   "main": "dist/vi18n.js",
   "scripts": {
     "build": "grunt build",
-    "test": "grunt test",
-    "coveralls": "grunt coveralls"
+    "test": "grunt test"
   },
   "keywords": [
     "i18n",
@@ -27,7 +26,6 @@
     "grunt-contrib-jshint": "^0.11.3",
     "grunt-contrib-requirejs": "^0.4.4",
     "grunt-contrib-watch": "^0.6.1",
-    "grunt-coveralls": "^1.0.0",
     "grunt-jscs": "^2.1.0",
     "grunt-template-jasmine-istanbul": "^0.3.4",
     "grunt-template-jasmine-requirejs": "^0.2.3",
