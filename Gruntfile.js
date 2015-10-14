@@ -135,6 +135,12 @@ module.exports = function (grunt) {
 								}
 							},
 							{
+								type: 'lcov',
+								options: {
+									dir: '<%= paths.coverage %>'
+								}
+							},
+							{
 								type: 'text-summary'
 							}
 						],
@@ -156,6 +162,17 @@ module.exports = function (grunt) {
 						}
 					}
 				}
+			}
+		},
+		coveralls: {
+			options: {
+				// When true, grunt-coveralls will only print a warning rather than
+				// an error, to prevent CI builds from failing unnecessarily (e.g. if
+				// coveralls.io is down). Optional, defaults to false.
+				force: false
+			},
+			dev: {
+				src: '<%= paths.coverage %>/*.info'
 			}
 		},
 		watch: {
