@@ -1,6 +1,6 @@
 {
     "preset": "airbnb",
-    "esnext": false,
+    "esnext": true,
     "disallowQuotedKeysInObjects": null,
     "disallowMultipleVarDecl": null,
     "requireTrailingComma": null,

@@ -1,21 +1,16 @@
-define(function() {
+let locales = {},
+	isObject = function(obj) {
+		// http://stackoverflow.com/a/4320789
+		return Object.prototype.toString.call(obj) === '[object Object]';
+	};
 
-	'use strict';
+export default class VI18N {
 
-	var locales = {},
-		isObject = function(obj) {
-			// http://stackoverflow.com/a/4320789
-			return Object.prototype.toString.call(obj) === '[object Object]';
-		};
-
-	function VI18N(locale, currency) {
+	constructor(locale = 'nl-NL', currency = 'EUR') {
 		// Fail fast when the Internationalization API isn't supported
 		if (!VI18N.isSupported()) {
 			throw new Error('Internationalization API (window.Intl) not supported, did you forget to include a polyfill?');
 		}
-
-		locale = locale || 'nl-NL';
-		currency = currency || 'EUR';
 
 		this.locale = locale;
 		this.currency = currency;
@@ -31,138 +26,118 @@ define(function() {
 		this.initialize(locale, currency);
 	}
 
-	VI18N.prototype = {
+	initialize(locale, currency) {
+		this.formatters.number = new window.Intl.NumberFormat(locale);
+		this.formatters.currency = new window.Intl.NumberFormat(locale, { style: 'currency', currency: currency, minimumFractionDigits: 2, maximumFractionDigits: 2 });
+		this.formatters.percent = new window.Intl.NumberFormat(locale, { style: 'percent', maximumFractionDigits: 0 });
+		this.formatters.date = new window.Intl.DateTimeFormat(locale);
+	}
 
-		constructor: VI18N,
+	// Format a number to a locale string
+	// For more information about the options see https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/NumberFormat
+	formatNumber(number, options) {
+		return isObject(options) ? new this.formatters.number.constructor(this.locale, options).format(number) : this.formatters.number.format(number);
+	}
 
-		initialize: function(locale, currency) {
-			this.formatters.number = new window.Intl.NumberFormat(locale);
-			this.formatters.currency = new window.Intl.NumberFormat(locale, { style: 'currency', currency: currency, minimumFractionDigits: 2, maximumFractionDigits: 2 });
-			this.formatters.percent = new window.Intl.NumberFormat(locale, { style: 'percent', maximumFractionDigits: 0 });
-			this.formatters.date = new window.Intl.DateTimeFormat(locale);
-		},
+	// Format a number to a locale currency string
+	// For more information about the options see https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/NumberFormat
+	formatCurrency(number, options) {
+		if (isObject(options)) {
+			// Set decimal defaults
+			options.minimumFractionDigits = typeof options.minimumFractionDigits === 'number' ? options.minimumFractionDigits : 2;
+			options.maximumFractionDigits = typeof options.maximumFractionDigits === 'number' ? options.maximumFractionDigits : 2;
 
-		getLocale: function() {
-			return this.locale;
-		},
+			// Hide currency symbol
+			if (options.currency === false) {
+				delete options.currency;
 
-		getCurrency: function() {
-			return this.currency;
-		},
-
-		// Format a number to a locale string
-		// For more information about the options see https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/NumberFormat
-		formatNumber: function(number, options) {
-			return isObject(options) ? new this.formatters.number.constructor(this.getLocale(), options).format(number) : this.formatters.number.format(number);
-		},
-
-		// Format a number to a locale currency string
-		// For more information about the options see https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/NumberFormat
-		formatCurrency: function(number, options) {
-			if (isObject(options)) {
-				// Set decimal defaults
-				options.minimumFractionDigits = typeof options.minimumFractionDigits === 'number' ? options.minimumFractionDigits : 2;
-				options.maximumFractionDigits = typeof options.maximumFractionDigits === 'number' ? options.maximumFractionDigits : 2;
-
-				// Hide currency symbol
-				if (options.currency === false) {
-					delete options.currency;
-
-					return this.formatNumber(number, options);
-				}
-
-				options.style = 'currency';
-				options.currency = options.currency || this.getCurrency();
-
-				return new this.formatters.currency.constructor(this.getLocale(), options).format(number);
+				return this.formatNumber(number, options);
 			}
 
-			return this.formatters.currency.format(number);
-		},
+			options.style = 'currency';
+			options.currency = options.currency || this.currency;
 
-		formatPercent: function(number, options) {
-			if (isObject(options)) {
-				options.style = 'percent';
-
-				return new this.formatters.percent.constructor(this.getLocale(), options).format(number);
-			}
-
-			return this.formatters.percent.format(number);
-		},
-
-		// Format a date object to a locale string
-		// For more information about the options see https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/DateTimeFormat
-		formatDate: function(date, options) {
-			return isObject(options) ? new this.formatters.date.constructor(this.getLocale(), options).format(date) : this.formatters.date.format(date);
-		},
-
-		formatTime: function(date) {
-			return this.formatDate(date, { hour: '2-digit', minute: '2-digit',	second: '2-digit' });
-		},
-
-		// Assume it is always one character
-		// https://en.wikipedia.org/wiki/Decimal_mark
-		getDecimalSeparator: function() {
-			return this.decimalSeparator || (this.decimalSeparator = this.formatNumber(1.1).charAt(1));
-		},
-
-		getThousandSeparator: function() {
-			return this.thousandSeparator || (this.thousandSeparator = (function(self) {
-						var separator = self.formatNumber(1000).charAt(1);
-
-						// When the separator is not a number (e.g. the decimal point in '1.000')
-						// return the separator, otherwise return an empty string
-						return isNaN(parseInt(separator, 10)) ? separator : '';
-
-					})(this));
-		},
-
-		getMonths: function(type) {
-			type = type || 'long';
-
-			return this.months[type] || (this.months[type] = (function(self) {
-						var date = new Date(Date.UTC(2015, 0, 1)),
-							months = [],
-							i = 0;
-
-						for (; i < 12; i++) {
-							date.setMonth(i);
-							months[i] = self.formatDate(date, { month: type });
-						}
-
-						return months;
-
-					})(this));
-		},
-
-		getDays: function(type) {
-			type = type || 'long';
-
-			return this.days[type] || (this.days[type] = (function(self) {
-						var date = new Date(Date.UTC(1978, 0, 1)), // https://en.wikipedia.org/wiki/Common_year_starting_on_Sunday
-							days = [],
-							i = 1;
-
-						for (; i <= 7; i++) {
-							date.setUTCDate(i);
-							days.push(self.formatDate(date, { weekday: type }));
-						}
-
-						return days;
-
-					})(this));
+			return new this.formatters.currency.constructor(this.locale, options).format(number);
 		}
 
-	};
+		return this.formatters.currency.format(number);
+	}
 
-	VI18N.get = function(locale) {
+	formatPercent(number, options) {
+		if (isObject(options)) {
+			options.style = 'percent';
+
+			return new this.formatters.percent.constructor(this.locale, options).format(number);
+		}
+
+		return this.formatters.percent.format(number);
+	}
+
+	// Format a date object to a locale string
+	// For more information about the options see https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/DateTimeFormat
+	formatDate(date, options) {
+		return isObject(options) ? new this.formatters.date.constructor(this.locale, options).format(date) : this.formatters.date.format(date);
+	}
+
+	formatTime(date) {
+		return this.formatDate(date, { hour: '2-digit', minute: '2-digit',	second: '2-digit' });
+	}
+
+	// Assume it is always one character
+	// https://en.wikipedia.org/wiki/Decimal_mark
+	getDecimalSeparator() {
+		return this.decimalSeparator || (this.decimalSeparator = this.formatNumber(1.1).charAt(1));
+	}
+
+	getThousandSeparator() {
+		return this.thousandSeparator || (this.thousandSeparator = (function(locale) {
+					let separator = locale.formatNumber(1000).charAt(1);
+
+					// When the separator is not a number (e.g. the decimal point in '1.000')
+					// return the separator, otherwise return an empty string
+					return isNaN(parseInt(separator, 10)) ? separator : '';
+
+				})(this));
+	}
+
+	getMonths(type = 'long') {
+		return this.months[type] || (this.months[type] = (function(locale) {
+					let date = new Date(Date.UTC(2015, 0, 1)),
+						months = [],
+						i = 0;
+
+					for (; i < 12; i++) {
+						date.setMonth(i);
+						months[i] = locale.formatDate(date, { month: type });
+					}
+
+					return months;
+
+				})(this));
+	}
+
+	getDays(type = 'long') {
+		return this.days[type] || (this.days[type] = (function(locale) {
+					let date = new Date(Date.UTC(1978, 0, 1)), // https://en.wikipedia.org/wiki/Common_year_starting_on_Sunday
+						days = [],
+						i = 1;
+
+					for (; i <= 7; i++) {
+						date.setUTCDate(i);
+						days.push(locale.formatDate(date, { weekday: type }));
+					}
+
+					return days;
+
+				})(this));
+	}
+
+	static getLocale(locale) {
 		return locales[locale];
-	};
+	}
 
-	VI18N.isSupported = function() {
+	static isSupported() {
 		return 'Intl' in window;
-	};
+	}
 
-	return VI18N;
-
-});
+}
