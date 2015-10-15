@@ -48,8 +48,7 @@ module.exports = function(grunt) {
 					'<%= jshint.dev.src %>'
 				],
 				options: {
-					config: '.jscsrc',
-					fix: true
+					config: '.jscsrc'
 				}
 			}
 		},
