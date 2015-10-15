@@ -90,46 +90,46 @@ export default class VI18N {
 	}
 
 	getThousandSeparator() {
-		return this.thousandSeparator || (this.thousandSeparator = (function(locale) {
-					let separator = locale.formatNumber(1000).charAt(1);
+		return this.thousandSeparator || (this.thousandSeparator = (() => {
+			let separator = this.formatNumber(1000).charAt(1);
 
-					// When the separator is not a number (e.g. the decimal point in '1.000')
-					// return the separator, otherwise return an empty string
-					return isNaN(parseInt(separator, 10)) ? separator : '';
+			// When the separator is not a number (e.g. the decimal point in '1.000')
+			// return the separator, otherwise return an empty string
+			return isNaN(parseInt(separator, 10)) ? separator : '';
 
-				})(this));
+		})());
 	}
 
 	getMonths(type = 'long') {
-		return this.months[type] || (this.months[type] = (function(locale) {
-					let date = new Date(Date.UTC(2015, 0, 1)),
-						months = [],
-						i = 0;
+		return this.months[type] || (this.months[type] = (() => {
+			let date = new Date(Date.UTC(2015, 0, 1)),
+				months = [],
+				i = 0;
 
-					for (; i < 12; i++) {
-						date.setMonth(i);
-						months[i] = locale.formatDate(date, { month: type });
-					}
+			for (; i < 12; i++) {
+				date.setMonth(i);
+				months[i] = this.formatDate(date, { month: type });
+			}
 
-					return months;
+			return months;
 
-				})(this));
+		})());
 	}
 
 	getDays(type = 'long') {
-		return this.days[type] || (this.days[type] = (function(locale) {
-					let date = new Date(Date.UTC(1978, 0, 1)), // https://en.wikipedia.org/wiki/Common_year_starting_on_Sunday
-						days = [],
-						i = 1;
+		return this.days[type] || (this.days[type] = (() => {
+			let date = new Date(Date.UTC(1978, 0, 1)), // https://en.wikipedia.org/wiki/Common_year_starting_on_Sunday
+				days = [],
+				i = 1;
 
-					for (; i <= 7; i++) {
-						date.setUTCDate(i);
-						days.push(locale.formatDate(date, { weekday: type }));
-					}
+			for (; i <= 7; i++) {
+				date.setUTCDate(i);
+				days.push(this.formatDate(date, { weekday: type }));
+			}
 
-					return days;
+			return days;
 
-				})(this));
+		})());
 	}
 
 	static getLocale(locale) {

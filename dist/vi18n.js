@@ -130,38 +130,50 @@
 		}, {
 			key: 'getThousandSeparator',
 			value: function getThousandSeparator() {
-				return this.thousandSeparator || (this.thousandSeparator = (function (locale) {
-					var separator = locale.formatNumber(1000).charAt(1);
+				// istanbul ignore next
+
+				var _this = this;
+
+				return this.thousandSeparator || (this.thousandSeparator = (function () {
+					var separator = _this.formatNumber(1000).charAt(1);
 
 					// When the separator is not a number (e.g. the decimal point in '1.000')
 					// return the separator, otherwise return an empty string
 					return isNaN(parseInt(separator, 10)) ? separator : '';
-				})(this));
+				})());
 			}
 		}, {
 			key: 'getMonths',
 			value: function getMonths() {
+				// istanbul ignore next
+
+				var _this2 = this;
+
 				var type = arguments.length <= 0 || arguments[0] === undefined ? 'long' : arguments[0];
 
-				return this.months[type] || (this.months[type] = (function (locale) {
+				return this.months[type] || (this.months[type] = (function () {
 					var date = new Date(Date.UTC(2015, 0, 1)),
 					    months = [],
 					    i = 0;
 
 					for (; i < 12; i++) {
 						date.setMonth(i);
-						months[i] = locale.formatDate(date, { month: type });
+						months[i] = _this2.formatDate(date, { month: type });
 					}
 
 					return months;
-				})(this));
+				})());
 			}
 		}, {
 			key: 'getDays',
 			value: function getDays() {
+				// istanbul ignore next
+
+				var _this3 = this;
+
 				var type = arguments.length <= 0 || arguments[0] === undefined ? 'long' : arguments[0];
 
-				return this.days[type] || (this.days[type] = (function (locale) {
+				return this.days[type] || (this.days[type] = (function () {
 					var date = new Date(Date.UTC(1978, 0, 1)),
 					    // https://en.wikipedia.org/wiki/Common_year_starting_on_Sunday
 					days = [],
@@ -169,11 +181,11 @@
 
 					for (; i <= 7; i++) {
 						date.setUTCDate(i);
-						days.push(locale.formatDate(date, { weekday: type }));
+						days.push(_this3.formatDate(date, { weekday: type }));
 					}
 
 					return days;
-				})(this));
+				})());
 			}
 		}], [{
 			key: 'getLocale',

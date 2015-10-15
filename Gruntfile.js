@@ -55,7 +55,7 @@ module.exports = function(grunt) {
 		babel: {
 			options: {
 				modules: 'umd',
-				auxiliaryComment: 'istanbul ignore next'
+				auxiliaryCommentBefore: 'istanbul ignore next'
 			},
 			dev: {
 				files: {
@@ -141,7 +141,7 @@ module.exports = function(grunt) {
 			},
 			js: {
 				files: ['<%= paths.js.source %>/**/*.js', '<%= paths.js.test %>/*-spec.js'],
-				tasks: ['babel', 'test'],
+				tasks: ['build'],
 				options: {
 					spawn: false
 				}
@@ -155,7 +155,7 @@ module.exports = function(grunt) {
 		pattern: ['grunt-*', '!grunt-template-jasmine-*']
 	});
 
-	grunt.registerTask('test', ['jshint', 'jscs', 'jasmine']);
+	grunt.registerTask('test', [/*'jshint', 'jscs',*/ 'jasmine']);
 
 	grunt.registerTask('build', ['babel', 'test', 'uglify']);
 
