@@ -126,7 +126,7 @@ module.exports = function(grunt) {
 			},
 			js: {
 				files: ['<%= paths.js.source %>/**/*.js', '<%= paths.js.test %>/*-spec.js'],
-				tasks: ['build'],
+				tasks: ['test'],
 				options: {
 					spawn: false
 				}
@@ -140,8 +140,11 @@ module.exports = function(grunt) {
 		pattern: ['grunt-*', '!grunt-template-jasmine-*']
 	});
 
-	grunt.registerTask('build', ['eslint', 'babel', 'jasmine', 'uglify']);
+	// Task used by Travis
+	grunt.registerTask('test', ['eslint', 'babel', 'jasmine']);
 
-	grunt.registerTask('default', ['build', 'watch']);
+	grunt.registerTask('build', ['test', 'bump', 'uglify']);
+
+	grunt.registerTask('default', ['test', 'watch']);
 
 };
