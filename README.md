@@ -1,6 +1,7 @@
 # VI18N
 
-[![Build status][travis-image]][travis-url] [![Code coverage][coveralls-image]][coveralls-url]
+[![Build Status](https://travis-ci.org/vicompany/vi18n.svg)](https://travis-ci.org/vicompany/vi18n)
+[![Coverage Status](https://coveralls.io/repos/vicompany/vi18n/badge.svg?branch=master&service=github)](https://coveralls.io/github/vicompany/vi18n?branch=master)
 
 Simple number, currency, type and date formatters based on the [Internationalization API](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Intl).
 
