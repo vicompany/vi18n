@@ -88,7 +88,7 @@ uk.getDays('narrow')    // [ 'S', 'M', 'T', etc. ]
 ###Static methods
 ```javascript
 // Get locale instances
-var dutch = VI18N.get('nl-NL');
+var dutch = VI18N.getLocale('nl-NL');
 
 // Check for native browser support or the presence of a polyfill.
 VI18N.isSupported();
