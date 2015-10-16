@@ -143,7 +143,7 @@ module.exports = function(grunt) {
 	// Task used by Travis
 	grunt.registerTask('test', ['eslint', 'babel', 'jasmine']);
 
-	grunt.registerTask('build', ['test', 'bump', 'uglify']);
+	grunt.registerTask('build', ['test', 'uglify']);
 
 	grunt.registerTask('default', ['test', 'watch']);
 
