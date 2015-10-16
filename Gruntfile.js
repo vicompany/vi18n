@@ -1,44 +1,6 @@
-/*jshint boss: true, curly: true, eqeqeq: true, eqnull: true, expr: true,
-	immed: true, noarg: true, onevar: true, quotmark: single, strict: true,
-	trailing: true, undef: true, node: true */
-
-module.exports = function (grunt) {
+module.exports = function(grunt) {
 
 	'use strict';
-
-	var rdefineEnd = /\}\s*?\);[^}\w]*$/,
-		convert = function(name, path, contents) { // Blatently stolen from jQuery: https://github.com/jquery/jquery/blob/master/build/tasks/build.js
-			// Convert var modules
-			if ( /.\/var\//.test( path ) ) {
-				contents = contents
-					.replace( /define\([\w\W]*?return/, "var " + (/var\/([\w-]+)/.exec(name)[1]) + " =" )
-					.replace( rdefineEnd, "" );
-
-			} else {
-				contents = contents
-					.replace( /\s*return\s+[^\}]+(\}\s*?\);[^\w\}]*)$/, "$1" )
-					// Multiple exports
-					.replace( /\s*exports\.\w+\s*=\s*\w+;/g, "" );
-
-				// Remove define wrappers, closure ends, and empty declarations
-				contents = contents
-					.replace( /define\([^{]*?{/, "" )
-					.replace( rdefineEnd, "" );
-
-				// Remove anything wrapped with
-				// /* ExcludeStart */ /* ExcludeEnd */
-				// or a single line directly after a // BuildExclude comment
-				contents = contents
-					.replace( /\/\*\s*ExcludeStart\s*\*\/[\w\W]*?\/\*\s*ExcludeEnd\s*\*\//ig, "" )
-					.replace( /\/\/\s*BuildExclude\n\r?[\w\W]*?\n\r?/ig, "" );
-
-				// Remove empty definitions
-				contents = contents
-					.replace( /define\(\[[^\]]*\]\)[\W\n]+$/, "" );
-			}
-
-			return contents;
-		};
 
 	grunt.initConfig({
 		paths: {
@@ -55,7 +17,7 @@ module.exports = function (grunt) {
 			coverage: '<%= paths.root %>/coverage'
 		},
 		pkg: grunt.file.readJSON('package.json'),
-		banner: '/*! <%= pkg.title || pkg.name %> - Copyright (c) <%= grunt.template.today("yyyy-mm-dd") %> <%= pkg.author %> */\n',
+		banner: '/*! <%= pkg.title || pkg.name %> - v<%= pkg.version %> - <%= grunt.template.today("yyyy-mm-dd") %> */',
 		bump: {
 			options: {
 				files: ['package.json', 'bower.json'],
@@ -66,61 +28,41 @@ module.exports = function (grunt) {
 				createTag: false
 			}
 		},
-		jshint: {
-			dev: {
-				src: [
-					'<%= paths.js.source %>/**/*.js'
-				],
-				options: {
-					jshintrc: '.jshintrc'
-				}
-			}
-		},
-		jscs: {
-			dev: {
-				src: [
-					'<%= jshint.dev.src %>'
-				],
-				options: {
-					config: '.jscsrc',
-					fix: true
-				}
-			}
-		},
-		requirejs: {
+		eslint: {
 			options: {
-				name: 'vi18n',
-				baseUrl: '<%= paths.js.source %>',
-				mainConfigFile: '<%= paths.js.source %>/require-config.js',
-				keepBuildDir: true,
-				findNestedDependencies: true,
-				skipModuleInsertion: true,
-				logLevel: 3,
-				wrap: {
-					startFile: ['<%= paths.js.source %>/umd-header.txt'],
-					endFile: ['<%= paths.js.source %>/umd-footer.txt']
-				},
-				onBuildWrite: convert
+				configFile: '.eslintrc'
+			},
+			target: [
+				'<%= paths.js.source %>/**/*.js'
+				// '<%= paths.js.test %>/**/*.js' // TODO: lint test files
+			]
+		},
+		babel: {
+			options: {
+				modules: 'umd',
+				auxiliaryCommentBefore: 'istanbul ignore next'
 			},
 			dev: {
-				options: {
-					optimize: 'none',
-					out: '<%= paths.js.dist %>/<%= pkg.name %>.js'
+				files: {
+					'<%= paths.js.dist %>/vi18n.js': '<%= paths.js.source %>/vi18n.js'
 				}
+			}
+		},
+		uglify: {
+			options: {
+				banner: '<%= banner %>',
+				sourceMap: true
 			},
 			dist: {
-				options: {
-					optimize: 'uglify2',
-					generateSourceMaps: true,
-					preserveLicenseComments: false,
-					out: '<%= paths.js.dist %>/<%= pkg.name %>.min.js'
+				files: {
+					'<%= paths.js.dist %>/vi18n.min.js': '<%= paths.js.dist %>/vi18n.js'
 				}
 			}
 		},
 		jasmine: {
 			// To debug use: grunt jasmine -v -d 9
 			dev: {
-				src: '<%= paths.js.source %>/vi18n.js',
+				src: '<%= paths.js.dist %>/vi18n.js',
 				options: {
 					specs: '<%= paths.js.test %>/*-spec.js',
 					keepRunner: true,
@@ -147,11 +89,11 @@ module.exports = function (grunt) {
 						template: require('grunt-template-jasmine-requirejs'),
 						templateOptions: {
 							requireConfig: {
-								baseUrl: '.grunt/grunt-contrib-jasmine/src',
+								baseUrl: '.grunt/grunt-contrib-jasmine/dist',
 								paths: {
-									'text':			'../../../bower_components/text/text',
-									'intl':			'../../../bower_components/intl/dist/Intl.min',
-									'locale-data':	'../../../bower_components/intl/locale-data/json'
+									'text':	'../../../bower_components/text/text',
+									'intl':	'../../../bower_components/intl/dist/Intl.min',
+									'locale-data': '../../../bower_components/intl/locale-data/json'
 								},
 								shim: {
 									intl: {
@@ -184,10 +126,9 @@ module.exports = function (grunt) {
 			},
 			js: {
 				files: ['<%= paths.js.source %>/**/*.js', '<%= paths.js.test %>/*-spec.js'],
-				tasks: ['test', 'requirejs:dev'],
+				tasks: ['test'],
 				options: {
-					spawn: false,
-					livereload: true
+					spawn: false
 				}
 			}
 		}
@@ -199,9 +140,10 @@ module.exports = function (grunt) {
 		pattern: ['grunt-*', '!grunt-template-jasmine-*']
 	});
 
-	grunt.registerTask('test', ['jshint', 'jscs', 'jasmine']);
+	// Task used by Travis
+	grunt.registerTask('test', ['eslint', 'babel', 'jasmine']);
 
-	grunt.registerTask('build', ['test', 'requirejs:dist']);
+	grunt.registerTask('build', ['test', 'uglify']);
 
 	grunt.registerTask('default', ['test', 'watch']);
 

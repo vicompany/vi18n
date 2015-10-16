@@ -35,7 +35,16 @@ function(VI18N) {
 
 		});
 
-		describe('VI18N', function() {
+		describe('Constructor', function() {
+
+			it('should return an instance with the Dutch locale and Euro as default', function() {
+				expect(this.locale.locale).toBe('nl-NL');
+				expect(this.locale.currency).toBe('EUR');
+			});
+
+		});
+
+		describe('VI18N.isSupported()', function() {
 
 			beforeEach(function() {
 				spyOn(VI18N, 'isSupported').and.callThrough();
@@ -47,33 +56,20 @@ function(VI18N) {
 				expect(VI18N.isSupported).toHaveBeenCalled();
 			});
 
-			it('should return an instance with the Dutch locale as default', function() {
-				expect(this.locale.getLocale()).toBe('nl-NL');
-				expect(this.locale.getCurrency()).toBe('EUR');
-			});
-
 		});
 
-		describe('VI18N.get()', function() {
+		describe('VI18N.getLocale()', function() {
 
 			it('should be defined', function() {
-				expect(VI18N.get).toEqual(jasmine.any(Function));
+				expect(VI18N.getLocale).toEqual(jasmine.any(Function));
 			});
 
 			it('should return locale instances', function() {
 				var en = new VI18N('en-GB', 'GPB'),
 					nl = new VI18N();
 
-				expect(VI18N.get('nl-NL')).toEqual(nl);
-				expect(VI18N.get('en-GB')).toEqual(en);
-			});
-
-		});
-
-		describe('getLocale', function() {
-
-			it('should be defined', function() {
-				expect(this.locale.getLocale).toEqual(jasmine.any(Function));
+				expect(VI18N.getLocale('nl-NL')).toEqual(nl);
+				expect(VI18N.getLocale('en-GB')).toEqual(en);
 			});
 
 		});
