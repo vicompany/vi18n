@@ -1,7 +1,3 @@
-/*jshint boss: true, curly: true, eqeqeq: true, eqnull: true, expr: true,
-	immed: true, noarg: true, onevar: true, quotmark: single, strict: true,
-	trailing: true, undef: true, node: true */
-
 module.exports = function(grunt) {
 
 	'use strict';
@@ -32,25 +28,14 @@ module.exports = function(grunt) {
 				createTag: false
 			}
 		},
-		jshint: {
-			dev: {
-				src: [
-					'<%= paths.js.source %>/**/*.js'
-				],
-				options: {
-					jshintrc: '.jshintrc'
-				}
-			}
-		},
-		jscs: {
-			dev: {
-				src: [
-					'<%= jshint.dev.src %>'
-				],
-				options: {
-					config: '.jscsrc'
-				}
-			}
+		eslint: {
+			options: {
+				configFile: '.eslintrc'
+			},
+			target: [
+				'<%= paths.js.source %>/**/*.js'
+				// '<%= paths.js.test %>/**/*.js' // TODO: lint test files
+			]
 		},
 		babel: {
 			options: {
@@ -106,9 +91,9 @@ module.exports = function(grunt) {
 							requireConfig: {
 								baseUrl: '.grunt/grunt-contrib-jasmine/dist',
 								paths: {
-									'text':			'../../../bower_components/text/text',
-									'intl':			'../../../bower_components/intl/dist/Intl.min',
-									'locale-data':	'../../../bower_components/intl/locale-data/json'
+									'text':	'../../../bower_components/text/text',
+									'intl':	'../../../bower_components/intl/dist/Intl.min',
+									'locale-data': '../../../bower_components/intl/locale-data/json'
 								},
 								shim: {
 									intl: {
@@ -155,10 +140,8 @@ module.exports = function(grunt) {
 		pattern: ['grunt-*', '!grunt-template-jasmine-*']
 	});
 
-	grunt.registerTask('test', [/*'jshint', 'jscs',*/ 'jasmine']);
+	grunt.registerTask('build', ['eslint', 'babel', 'jasmine', 'uglify']);
 
-	grunt.registerTask('build', ['babel', 'test', 'uglify']);
-
-	grunt.registerTask('default', ['test', 'watch']);
+	grunt.registerTask('default', ['build', 'watch']);
 
 };

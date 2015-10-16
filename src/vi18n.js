@@ -1,4 +1,4 @@
-let locales = {},
+const locales = {},
 	isObject = function(obj) {
 		// http://stackoverflow.com/a/4320789
 		return Object.prototype.toString.call(obj) === '[object Object]';
@@ -96,7 +96,6 @@ export default class VI18N {
 			// When the separator is not a number (e.g. the decimal point in '1.000')
 			// return the separator, otherwise return an empty string
 			return isNaN(parseInt(separator, 10)) ? separator : '';
-
 		})());
 	}
 
@@ -112,7 +111,6 @@ export default class VI18N {
 			}
 
 			return months;
-
 		})());
 	}
 
@@ -128,7 +126,6 @@ export default class VI18N {
 			}
 
 			return days;
-
 		})());
 	}
 
