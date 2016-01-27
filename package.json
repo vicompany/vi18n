@@ -1,6 +1,6 @@
 {
   "name": "vi18n",
-  "version": "0.2.0",
+  "version": "1.0.0",
   "description": "Simple number, currency and date formatters based on the Internationalization API",
   "repository": {
     "type": "git",
