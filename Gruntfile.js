@@ -91,9 +91,9 @@ module.exports = function(grunt) {
 							requireConfig: {
 								baseUrl: '.grunt/grunt-contrib-jasmine/dist',
 								paths: {
-									'text':	'../../../bower_components/text/text',
-									'intl':	'../../../bower_components/intl/dist/Intl.min',
-									'locale-data': '../../../bower_components/intl/locale-data/json'
+									'text': '../../../node_modules/requirejs-text/text',
+									'intl':	'../../../node_modules/intl/dist/Intl.min',
+									'locale-data': '../../../node_modules/intl/locale-data/json'
 								},
 								shim: {
 									intl: {

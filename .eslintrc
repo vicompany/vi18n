@@ -1,7 +1,7 @@
 {
   "extends": "airbnb/base",
   "env": {
-    "amd": true,
+    "es6": true,
     "browser": true,
     "jasmine": true
   },
@@ -10,7 +10,11 @@
     "id-length": 0,
     "indent": [2, "tab", { "SwitchCase": 1 }],
     "func-names": 0,
-    "one-var": [2, "always"],
+    "one-var": [2, {
+      "var": "always",
+      "let": "never",
+      "const": "never"
+    }],
     "padded-blocks": 0,
     "prefer-const": 0
   }
