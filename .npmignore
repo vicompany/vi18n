@@ -1,0 +1,17 @@
+# Grunt
+.grunt
+Gruntfile.js
+
+# Source
+src/
+
+# Test
+test/
+coverage/
+_SpecRunner.html
+
+# Config
+.editorconfig
+.eslintrc
+.gitattributes
+.travis.yml

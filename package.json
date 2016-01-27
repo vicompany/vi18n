@@ -6,7 +6,8 @@
     "type": "git",
     "url": "https://github.com/vicompany/vi18n.git"
   },
-  "main": "dist/vi18n.js",
+  "main": "dist/vi18n.min.js",
+  "homepage": "https://github.com/vicompany/vi18n",
   "scripts": {
     "build": "grunt build",
     "test": "grunt test",
