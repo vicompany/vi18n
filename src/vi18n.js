@@ -1,15 +1,13 @@
-const locales = {},
-	isObject = function(obj) {
-		// http://stackoverflow.com/a/4320789
-		return Object.prototype.toString.call(obj) === '[object Object]';
-	};
+const locales = {};
+
+let isObject = (obj) => Object.prototype.toString.call(obj) === '[object Object]';
 
 export default class VI18N {
 
 	constructor(locale = 'nl-NL', currency = 'EUR') {
 		// Fail fast when the Internationalization API isn't supported
 		if (!VI18N.isSupported()) {
-			throw new Error('Internationalization API (window.Intl) not supported, did you forget to include a polyfill?');
+			throw new Error('Internationalization API not supported, did you forget to include a polyfill?');
 		}
 
 		this.locale = locale;
@@ -28,15 +26,26 @@ export default class VI18N {
 
 	initialize(locale, currency) {
 		this.formatters.number = new window.Intl.NumberFormat(locale);
-		this.formatters.currency = new window.Intl.NumberFormat(locale, { style: 'currency', currency: currency, minimumFractionDigits: 2, maximumFractionDigits: 2 });
-		this.formatters.percent = new window.Intl.NumberFormat(locale, { style: 'percent', maximumFractionDigits: 0 });
+		this.formatters.currency = new window.Intl.NumberFormat(locale, {
+			style: 'currency',
+			currency, minimumFractionDigits: 2,
+			maximumFractionDigits: 2
+		});
+		this.formatters.percent = new window.Intl.NumberFormat(locale, {
+			style: 'percent',
+			maximumFractionDigits: 0
+		});
 		this.formatters.date = new window.Intl.DateTimeFormat(locale);
 	}
 
 	// Format a number to a locale string
 	// For more information about the options see https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/NumberFormat
 	formatNumber(number, options) {
-		return isObject(options) ? new this.formatters.number.constructor(this.locale, options).format(number) : this.formatters.number.format(number);
+		let Formatter = this.formatters.number.constructor;
+
+		return isObject(options)
+			? new Formatter(this.locale, options).format(number)
+			: this.formatters.number.format(number);
 	}
 
 	// Format a number to a locale currency string
@@ -57,7 +66,9 @@ export default class VI18N {
 			options.style = 'currency';
 			options.currency = options.currency || this.currency;
 
-			return new this.formatters.currency.constructor(this.locale, options).format(number);
+			let Formatter = this.formatters.currency.constructor;
+
+			return new Formatter(this.locale, options).format(number);
 		}
 
 		return this.formatters.currency.format(number);
@@ -65,9 +76,11 @@ export default class VI18N {
 
 	formatPercent(number, options) {
 		if (isObject(options)) {
+			let Formatter = this.formatters.percent.constructor;
+
 			options.style = 'percent';
 
-			return new this.formatters.percent.constructor(this.locale, options).format(number);
+			return new Formatter(this.locale, options).format(number);
 		}
 
 		return this.formatters.percent.format(number);
@@ -76,11 +89,15 @@ export default class VI18N {
 	// Format a date object to a locale string
 	// For more information about the options see https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/DateTimeFormat
 	formatDate(date, options) {
-		return isObject(options) ? new this.formatters.date.constructor(this.locale, options).format(date) : this.formatters.date.format(date);
+		let Formatter = this.formatters.date.constructor;
+
+		return isObject(options)
+			? new Formatter(this.locale, options).format(date)
+			: this.formatters.date.format(date);
 	}
 
 	formatTime(date) {
-		return this.formatDate(date, { hour: '2-digit', minute: '2-digit',	second: '2-digit' });
+		return this.formatDate(date, { hour: '2-digit', minute: '2-digit', second: '2-digit' });
 	}
 
 	// Assume it is always one character
@@ -101,11 +118,10 @@ export default class VI18N {
 
 	getMonths(type = 'long') {
 		return this.months[type] || (this.months[type] = (() => {
-			let date = new Date(Date.UTC(2015, 0, 1)),
-				months = [],
-				i = 0;
+			let date = new Date(Date.UTC(2015, 0, 1));
+			let months = [];
 
-			for (; i < 12; i++) {
+			for (let i = 0; i < 12; i++) {
 				date.setMonth(i);
 				months[i] = this.formatDate(date, { month: type });
 			}
@@ -116,11 +132,10 @@ export default class VI18N {
 
 	getDays(type = 'long') {
 		return this.days[type] || (this.days[type] = (() => {
-			let date = new Date(Date.UTC(1978, 0, 1)), // https://en.wikipedia.org/wiki/Common_year_starting_on_Sunday
-				days = [],
-				i = 1;
+			let date = new Date(Date.UTC(1978, 0, 1)); // https://en.wikipedia.org/wiki/Common_year_starting_on_Sunday
+			let days = [];
 
-			for (; i <= 7; i++) {
+			for (let i = 1; i <= 7; i++) {
 				date.setUTCDate(i);
 				days.push(this.formatDate(date, { weekday: type }));
 			}

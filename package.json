@@ -1,12 +1,13 @@
 {
   "name": "vi18n",
-  "version": "0.2.0",
+  "version": "1.0.0",
   "description": "Simple number, currency and date formatters based on the Internationalization API",
   "repository": {
     "type": "git",
     "url": "https://github.com/vicompany/vi18n.git"
   },
-  "main": "dist/vi18n.js",
+  "main": "dist/vi18n.min.js",
+  "homepage": "https://github.com/vicompany/vi18n",
   "scripts": {
     "build": "grunt build",
     "test": "grunt test",
@@ -34,6 +35,8 @@
     "grunt-eslint": "^17.3.1",
     "grunt-template-jasmine-istanbul": "^0.3.4",
     "grunt-template-jasmine-requirejs": "^0.2.3",
-    "load-grunt-tasks": "^3.3.0"
+    "intl": "^1.0.1",
+    "load-grunt-tasks": "^3.3.0",
+    "requirejs-text": "^2.0.12"
   }
 }

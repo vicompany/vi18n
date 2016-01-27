@@ -1,4 +1,4 @@
-module.exports = function(grunt) {
+module.exports = function (grunt) {
 
 	'use strict';
 
@@ -9,7 +9,6 @@ module.exports = function(grunt) {
 			css: '<%= paths.root %>/css',
 			scss: '<%= paths.root %>/scss',
 			js: {
-				vendor: '<%= paths.root %>/bower_components',
 				source: '<%= paths.root %>/src',
 				test: '<%= paths.root %>/test',
 				dist: '<%= paths.root %>/dist'
@@ -20,12 +19,15 @@ module.exports = function(grunt) {
 		banner: '/*! <%= pkg.title || pkg.name %> - v<%= pkg.version %> - <%= grunt.template.today("yyyy-mm-dd") %> */',
 		bump: {
 			options: {
-				files: ['package.json', 'bower.json'],
-				commitFiles: ['package.json', 'bower.json'],
+				files: ['package.json'],
 				updateConfigs: ['pkg'],
 				push: false,
-				commit: false,
-				createTag: false
+				commit: true,
+				commitMessage: 'Release %VERSION%',
+				commitFiles: ['package.json'],
+				createTag: true,
+				tagName: '%VERSION%',
+				tagMessage: 'Version %VERSION%'
 			}
 		},
 		eslint: {
@@ -91,9 +93,9 @@ module.exports = function(grunt) {
 							requireConfig: {
 								baseUrl: '.grunt/grunt-contrib-jasmine/dist',
 								paths: {
-									'text':	'../../../bower_components/text/text',
-									'intl':	'../../../bower_components/intl/dist/Intl.min',
-									'locale-data': '../../../bower_components/intl/locale-data/json'
+									'text': '../../../node_modules/requirejs-text/text',
+									'intl': '../../../node_modules/intl/dist/Intl.min',
+									'locale-data': '../../../node_modules/intl/locale-data/json'
 								},
 								shim: {
 									intl: {

@@ -21,9 +21,9 @@
 
 	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
 
-	var locales = {},
-	    isObject = function isObject(obj) {
-		// http://stackoverflow.com/a/4320789
+	var locales = {};
+
+	var isObject = function isObject(obj) {
 		return Object.prototype.toString.call(obj) === '[object Object]';
 	};
 
@@ -36,7 +36,7 @@
 
 			// Fail fast when the Internationalization API isn't supported
 			if (!VI18N.isSupported()) {
-				throw new Error('Internationalization API (window.Intl) not supported, did you forget to include a polyfill?');
+				throw new Error('Internationalization API not supported, did you forget to include a polyfill?');
 			}
 
 			this.locale = locale;
@@ -57,8 +57,15 @@
 			key: 'initialize',
 			value: function initialize(locale, currency) {
 				this.formatters.number = new window.Intl.NumberFormat(locale);
-				this.formatters.currency = new window.Intl.NumberFormat(locale, { style: 'currency', currency: currency, minimumFractionDigits: 2, maximumFractionDigits: 2 });
-				this.formatters.percent = new window.Intl.NumberFormat(locale, { style: 'percent', maximumFractionDigits: 0 });
+				this.formatters.currency = new window.Intl.NumberFormat(locale, {
+					style: 'currency',
+					currency: currency, minimumFractionDigits: 2,
+					maximumFractionDigits: 2
+				});
+				this.formatters.percent = new window.Intl.NumberFormat(locale, {
+					style: 'percent',
+					maximumFractionDigits: 0
+				});
 				this.formatters.date = new window.Intl.DateTimeFormat(locale);
 			}
 
@@ -67,7 +74,9 @@
 		}, {
 			key: 'formatNumber',
 			value: function formatNumber(number, options) {
-				return isObject(options) ? new this.formatters.number.constructor(this.locale, options).format(number) : this.formatters.number.format(number);
+				var Formatter = this.formatters.number.constructor;
+
+				return isObject(options) ? new Formatter(this.locale, options).format(number) : this.formatters.number.format(number);
 			}
 
 			// Format a number to a locale currency string
@@ -90,7 +99,9 @@
 					options.style = 'currency';
 					options.currency = options.currency || this.currency;
 
-					return new this.formatters.currency.constructor(this.locale, options).format(number);
+					var Formatter = this.formatters.currency.constructor;
+
+					return new Formatter(this.locale, options).format(number);
 				}
 
 				return this.formatters.currency.format(number);
@@ -99,9 +110,11 @@
 			key: 'formatPercent',
 			value: function formatPercent(number, options) {
 				if (isObject(options)) {
+					var Formatter = this.formatters.percent.constructor;
+
 					options.style = 'percent';
 
-					return new this.formatters.percent.constructor(this.locale, options).format(number);
+					return new Formatter(this.locale, options).format(number);
 				}
 
 				return this.formatters.percent.format(number);
@@ -112,7 +125,9 @@
 		}, {
 			key: 'formatDate',
 			value: function formatDate(date, options) {
-				return isObject(options) ? new this.formatters.date.constructor(this.locale, options).format(date) : this.formatters.date.format(date);
+				var Formatter = this.formatters.date.constructor;
+
+				return isObject(options) ? new Formatter(this.locale, options).format(date) : this.formatters.date.format(date);
 			}
 		}, {
 			key: 'formatTime',
@@ -152,11 +167,10 @@
 				var type = arguments.length <= 0 || arguments[0] === undefined ? 'long' : arguments[0];
 
 				return this.months[type] || (this.months[type] = (function () {
-					var date = new Date(Date.UTC(2015, 0, 1)),
-					    months = [],
-					    i = 0;
+					var date = new Date(Date.UTC(2015, 0, 1));
+					var months = [];
 
-					for (; i < 12; i++) {
+					for (var i = 0; i < 12; i++) {
 						date.setMonth(i);
 						months[i] = _this2.formatDate(date, { month: type });
 					}
@@ -174,12 +188,10 @@
 				var type = arguments.length <= 0 || arguments[0] === undefined ? 'long' : arguments[0];
 
 				return this.days[type] || (this.days[type] = (function () {
-					var date = new Date(Date.UTC(1978, 0, 1)),
-					    // https://en.wikipedia.org/wiki/Common_year_starting_on_Sunday
-					days = [],
-					    i = 1;
+					var date = new Date(Date.UTC(1978, 0, 1)); // https://en.wikipedia.org/wiki/Common_year_starting_on_Sunday
+					var days = [];
 
-					for (; i <= 7; i++) {
+					for (var i = 1; i <= 7; i++) {
 						date.setUTCDate(i);
 						days.push(_this3.formatDate(date, { weekday: type }));
 					}
