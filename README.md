@@ -93,3 +93,7 @@ var dutch = VI18N.getLocale('nl-NL');
 // Check for native browser support or the presence of a polyfill.
 VI18N.isSupported();
 ```
+
+## License
+
+MIT © [VI Company](http://vicompany.nl)
