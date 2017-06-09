@@ -18,7 +18,7 @@ test('Constructor checks "Intl" support', (t) => {
 	sinon.spy(VI18N, 'isSupported');
 
 	// eslint-disable-next-line
-	const locale = (new VI18N());
+	const locale = new VI18N();
 
 	t.true(VI18N.isSupported.calledOnce);
 });
