@@ -1,25 +1,56 @@
 (function (global, factory) {
-	if (typeof define === 'function' && define.amd) {
-		define(['exports', 'module'], factory);
-	} else if (typeof exports !== 'undefined' && typeof module !== 'undefined') {
-		factory(exports, module);
+	if (typeof define === "function" && define.amd) {
+		define(['module'], factory);
+	} else if (typeof exports !== "undefined") {
+		factory(module);
 	} else {
 		var mod = {
 			exports: {}
 		};
-		factory(mod.exports, mod);
-		global.vi18n = mod.exports;
+		factory(mod);
+		global.VI18N = mod.exports;
 	}
-})(this, function (exports, module) {
+})(this, function (module) {
 	'use strict';
 
-	// istanbul ignore next
+	function _classCallCheck(instance, Constructor) {
+		if (!(instance instanceof Constructor)) {
+			throw new TypeError("Cannot call a class as a function");
+		}
+	}
 
-	var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
+	var _createClass = function () {
+		function defineProperties(target, props) {
+			for (var i = 0; i < props.length; i++) {
+				var descriptor = props[i];
+				descriptor.enumerable = descriptor.enumerable || false;
+				descriptor.configurable = true;
+				if ("value" in descriptor) descriptor.writable = true;
+				Object.defineProperty(target, descriptor.key, descriptor);
+			}
+		}
 
-	// istanbul ignore next
+		return function (Constructor, protoProps, staticProps) {
+			if (protoProps) defineProperties(Constructor.prototype, protoProps);
+			if (staticProps) defineProperties(Constructor, staticProps);
+			return Constructor;
+		};
+	}();
 
-	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
+	var root = function () {
+		if (typeof window !== 'undefined') {
+			// Browser window
+			return window;
+		}
+
+		if (typeof self !== 'undefined') {
+			// Web Worker
+			return self;
+		}
+
+		// Other environments (in node global === this)
+		return undefined; // eslint-disable-line
+	}();
 
 	var locales = {};
 
@@ -27,10 +58,10 @@
 		return Object.prototype.toString.call(obj) === '[object Object]';
 	};
 
-	var VI18N = (function () {
+	var VI18N = function () {
 		function VI18N() {
-			var locale = arguments.length <= 0 || arguments[0] === undefined ? 'nl-NL' : arguments[0];
-			var currency = arguments.length <= 1 || arguments[1] === undefined ? 'EUR' : arguments[1];
+			var locale = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 'nl-NL';
+			var currency = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 'EUR';
 
 			_classCallCheck(this, VI18N);
 
@@ -56,21 +87,19 @@
 		_createClass(VI18N, [{
 			key: 'initialize',
 			value: function initialize(locale, currency) {
-				this.formatters.number = new window.Intl.NumberFormat(locale);
-				this.formatters.currency = new window.Intl.NumberFormat(locale, {
+				this.formatters.number = new Intl.NumberFormat(locale);
+				this.formatters.currency = new Intl.NumberFormat(locale, {
 					style: 'currency',
-					currency: currency, minimumFractionDigits: 2,
+					currency: currency,
+					minimumFractionDigits: 2,
 					maximumFractionDigits: 2
 				});
-				this.formatters.percent = new window.Intl.NumberFormat(locale, {
+				this.formatters.percent = new Intl.NumberFormat(locale, {
 					style: 'percent',
 					maximumFractionDigits: 0
 				});
-				this.formatters.date = new window.Intl.DateTimeFormat(locale);
+				this.formatters.date = new Intl.DateTimeFormat(locale);
 			}
-
-			// Format a number to a locale string
-			// For more information about the options see https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/NumberFormat
 		}, {
 			key: 'formatNumber',
 			value: function formatNumber(number, options) {
@@ -78,9 +107,6 @@
 
 				return isObject(options) ? new Formatter(this.locale, options).format(number) : this.formatters.number.format(number);
 			}
-
-			// Format a number to a locale currency string
-			// For more information about the options see https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/NumberFormat
 		}, {
 			key: 'formatCurrency',
 			value: function formatCurrency(number, options) {
@@ -119,9 +145,6 @@
 
 				return this.formatters.percent.format(number);
 			}
-
-			// Format a date object to a locale string
-			// For more information about the options see https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/DateTimeFormat
 		}, {
 			key: 'formatDate',
 			value: function formatDate(date, options) {
@@ -134,39 +157,32 @@
 			value: function formatTime(date) {
 				return this.formatDate(date, { hour: '2-digit', minute: '2-digit', second: '2-digit' });
 			}
-
-			// Assume it is always one character
-			// https://en.wikipedia.org/wiki/Decimal_mark
 		}, {
 			key: 'getDecimalSeparator',
 			value: function getDecimalSeparator() {
-				return this.decimalSeparator || (this.decimalSeparator = this.formatNumber(1.1).charAt(1));
+				return this.decimalSeparator || (this.decimalSeparator = this.formatNumber(1.1).charAt(1)); // eslint-disable-line max-len
 			}
 		}, {
 			key: 'getThousandSeparator',
 			value: function getThousandSeparator() {
-				// istanbul ignore next
-
 				var _this = this;
 
-				return this.thousandSeparator || (this.thousandSeparator = (function () {
+				return this.thousandSeparator || (this.thousandSeparator = function () {
 					var separator = _this.formatNumber(1000).charAt(1);
 
 					// When the separator is not a number (e.g. the decimal point in '1.000')
 					// return the separator, otherwise return an empty string
 					return isNaN(parseInt(separator, 10)) ? separator : '';
-				})());
+				}());
 			}
 		}, {
 			key: 'getMonths',
 			value: function getMonths() {
-				// istanbul ignore next
-
 				var _this2 = this;
 
-				var type = arguments.length <= 0 || arguments[0] === undefined ? 'long' : arguments[0];
+				var type = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 'long';
 
-				return this.months[type] || (this.months[type] = (function () {
+				return this.months[type] || (this.months[type] = function () {
 					var date = new Date(Date.UTC(2015, 0, 1));
 					var months = [];
 
@@ -176,18 +192,16 @@
 					}
 
 					return months;
-				})());
+				}());
 			}
 		}, {
 			key: 'getDays',
 			value: function getDays() {
-				// istanbul ignore next
-
 				var _this3 = this;
 
-				var type = arguments.length <= 0 || arguments[0] === undefined ? 'long' : arguments[0];
+				var type = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 'long';
 
-				return this.days[type] || (this.days[type] = (function () {
+				return this.days[type] || (this.days[type] = function () {
 					var date = new Date(Date.UTC(1978, 0, 1)); // https://en.wikipedia.org/wiki/Common_year_starting_on_Sunday
 					var days = [];
 
@@ -197,7 +211,7 @@
 					}
 
 					return days;
-				})());
+				}());
 			}
 		}], [{
 			key: 'getLocale',
@@ -207,12 +221,12 @@
 		}, {
 			key: 'isSupported',
 			value: function isSupported() {
-				return 'Intl' in window;
+				return 'Intl' in root;
 			}
 		}]);
 
 		return VI18N;
-	})();
+	}();
 
 	module.exports = VI18N;
 });
