@@ -1,5 +1,8 @@
 {
   "extends": "vi/node",
+  "parserOptions": {
+    "sourceType": "module"
+  },
   "env": {
     "browser": true
   }

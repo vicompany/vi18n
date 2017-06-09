@@ -9,7 +9,12 @@ const root = (() => {
 		return self;
 	}
 
-	// Other environments (in node global === this)
+	if (typeof global !== 'undefined') {
+		// Node
+		return global;
+	}
+
+	// Other environments
 	return this; // eslint-disable-line
 })();
 
