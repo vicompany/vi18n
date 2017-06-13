@@ -3,13 +3,13 @@ import sinon from 'sinon';
 
 import VI18N from '../src/vi18n';
 
+let locale;
+
 test.beforeEach((t) => {
-	t.context.locale = new VI18N();
+	locale = new VI18N();
 });
 
 test('Constructor defaults to "nl-NL" locale with "EUR" as currency', (t) => {
-	const { locale } = t.context;
-
 	t.is(locale.locale, 'nl-NL');
 	t.is(locale.currency, 'EUR');
 });
@@ -17,8 +17,7 @@ test('Constructor defaults to "nl-NL" locale with "EUR" as currency', (t) => {
 test('Constructor checks "Intl" support', (t) => {
 	sinon.spy(VI18N, 'isSupported');
 
-	// eslint-disable-next-line
-	const locale = new VI18N();
+	locale = new VI18N();
 
 	t.true(VI18N.isSupported.calledOnce);
 });
@@ -32,7 +31,6 @@ test('VI18N.getLocale() returns locale instances', (t) => {
 });
 
 test('locale.getMonths()', (t) => {
-	const { locale } = t.context;
 	const months = locale.getMonths();
 
 	t.true(Array.isArray(months));
@@ -42,7 +40,6 @@ test('locale.getMonths()', (t) => {
 });
 
 test('locale.getDays()', (t) => {
-	const { locale } = t.context;
 	const days = locale.getDays();
 
 	t.true(Array.isArray(days));
@@ -52,7 +49,6 @@ test('locale.getDays()', (t) => {
 });
 
 test('getDecimalSeparator()', (t) => {
-	const { locale } = t.context;
 	const separator = locale.getDecimalSeparator();
 
 	t.is(typeof separator, 'string');
@@ -60,7 +56,6 @@ test('getDecimalSeparator()', (t) => {
 });
 
 test('getThousandSeparator()', (t) => {
-	const { locale } = t.context;
 	const separator = locale.getThousandSeparator();
 
 	t.is(typeof separator, 'string');
