@@ -14,9 +14,9 @@
     "clean": "rimraf dist/*",
     "lint": "eslint src/*.js --fix",
     "minify": "uglifyjs dist/vi18n.js --compress --mangle --source-map --output dist/vi18n.min.js",
-    "test": "ava",
-    "watch": "npm run test -- --watch",
-    "coveralls": "grunt coveralls"
+    "test": "nyc ava",
+    "coveralls": "nyc report --reporter=text-lcov | coveralls",
+    "watch": "ava --watch"
   },
   "keywords": [
     "i18n",
@@ -31,10 +31,12 @@
     "babel-cli": "^6.24.1",
     "babel-plugin-transform-es2015-modules-umd": "^6.24.1",
     "babel-preset-es2015": "^6.24.1",
+    "coveralls": "^2.13.1",
     "eslint": "^3.19.0",
     "eslint-config-vi": "^6.0.0",
     "intl": "^1.2.5",
     "intl-locales-supported": "^1.0.0",
+    "nyc": "^11.0.2",
     "rimraf": "^2.6.1",
     "sinon": "^2.3.2",
     "uglify-es": "^3.0.15"

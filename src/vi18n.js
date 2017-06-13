@@ -1,3 +1,4 @@
+/* istanbul ignore next */
 const root = (() => {
 	if (typeof window !== 'undefined') {
 		// Browser window
@@ -15,7 +16,7 @@ const root = (() => {
 	}
 
 	// Other environments
-	return this; // eslint-disable-line
+	return this; // eslint-disable-line no-invalid-this
 })();
 
 const locales = {};
@@ -25,6 +26,7 @@ const isObject = obj => Object.prototype.toString.call(obj) === '[object Object]
 class VI18N {
 	constructor(locale = 'nl-NL', currency = 'EUR') {
 		// Fail fast when the Internationalization API isn't supported
+		/* istanbul ignore if */
 		if (!VI18N.isSupported()) {
 			throw new Error('Internationalization API not supported, did you forget to include a polyfill?');
 		}
