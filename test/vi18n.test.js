@@ -48,14 +48,14 @@ test('locale.getDays()', (t) => {
 	t.regex(days[6], /za/i);
 });
 
-test('getDecimalSeparator()', (t) => {
+test('locale.getDecimalSeparator()', (t) => {
 	const separator = locale.getDecimalSeparator();
 
 	t.is(typeof separator, 'string');
 	t.is(separator, ',');
 });
 
-test('getThousandSeparator()', (t) => {
+test('locale.getThousandSeparator()', (t) => {
 	const separator = locale.getThousandSeparator();
 
 	t.is(typeof separator, 'string');
