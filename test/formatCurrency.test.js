@@ -51,11 +51,6 @@ test('formats 1000 to "€ 1.000"', (t) => {
 	t.is(locale.formatCurrency(1000, noDecimals), '€ 1.000');
 });
 
-// currency "false" option
-test('formats 1.1298 to "1,13"', (t) => {
-	t.is(locale.formatCurrency(1.1298, { currency: false }), '1,13');
-});
-
 // other currencies
 const usd = {
 	currency: 'USD',

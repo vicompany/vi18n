@@ -24,12 +24,14 @@ const locales = {};
 const isObject = obj => Object.prototype.toString.call(obj) === '[object Object]';
 
 class VI18N {
-	constructor(locale = 'nl-NL', currency = 'EUR') {
+	constructor(locale = 'nl-NL', currency = 'EUR' /* options = {} */) {
 		// Fail fast when the Internationalization API isn't supported
 		/* istanbul ignore if */
 		if (!VI18N.isSupported()) {
 			throw new Error('Internationalization API not supported, did you forget to include a polyfill?');
 		}
+
+		// const { locale = 'nl-NL', currency = 'EUR' } = options;
 
 		this.locale = locale;
 		this.currency = currency;
@@ -50,12 +52,9 @@ class VI18N {
 		this.formatters.currency = new Intl.NumberFormat(locale, {
 			style: 'currency',
 			currency,
-			minimumFractionDigits: 2,
-			maximumFractionDigits: 2,
 		});
 		this.formatters.percent = new Intl.NumberFormat(locale, {
 			style: 'percent',
-			maximumFractionDigits: 0,
 		});
 		this.formatters.date = new Intl.DateTimeFormat(locale);
 	}
@@ -63,10 +62,8 @@ class VI18N {
 	// Format a number to a locale string
 	// For more information about the options see https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/NumberFormat
 	formatNumber(number, options) {
-		const Formatter = this.formatters.number.constructor;
-
 		return isObject(options)
-			? new Formatter(this.locale, options).format(number)
+			? number.toLocaleString(this.locale, options)
 			: this.formatters.number.format(number);
 	}
 
@@ -74,23 +71,11 @@ class VI18N {
 	// For more information about the options see https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/NumberFormat
 	formatCurrency(number, options) {
 		if (isObject(options)) {
-			// Set decimal defaults
-			options.minimumFractionDigits = typeof options.minimumFractionDigits === 'number' ? options.minimumFractionDigits : 2;
-			options.maximumFractionDigits = typeof options.maximumFractionDigits === 'number' ? options.maximumFractionDigits : 2;
+			const { style = 'currency', currency = this.currency } = options;
 
-			// Hide currency symbol
-			if (options.currency === false) {
-				delete options.currency;
+			Object.assign(options, { style, currency });
 
-				return this.formatNumber(number, options);
-			}
-
-			options.style = 'currency';
-			options.currency = options.currency || this.currency;
-
-			const Formatter = this.formatters.currency.constructor;
-
-			return new Formatter(this.locale, options).format(number);
+			return number.toLocaleString(this.locale, options);
 		}
 
 		return this.formatters.currency.format(number);
@@ -98,11 +83,9 @@ class VI18N {
 
 	formatPercent(number, options) {
 		if (isObject(options)) {
-			const Formatter = this.formatters.percent.constructor;
-
 			options.style = 'percent';
 
-			return new Formatter(this.locale, options).format(number);
+			return number.toLocaleString(this.locale, options);
 		}
 
 		return this.formatters.percent.format(number);
@@ -111,15 +94,13 @@ class VI18N {
 	// Format a date object to a locale string
 	// For more information about the options see https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/DateTimeFormat
 	formatDate(date, options) {
-		const Formatter = this.formatters.date.constructor;
-
 		return isObject(options)
-			? new Formatter(this.locale, options).format(date)
+			? date.toLocaleDateString(this.locale, options)
 			: this.formatters.date.format(date);
 	}
 
-	formatTime(date) {
-		return this.formatDate(date, { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+	formatTime(date, options = {}) {
+		return date.toLocaleTimeString(this.locale, options);
 	}
 
 	// Assume it is always one character
@@ -170,7 +151,11 @@ class VI18N {
 		return locales[locale];
 	}
 
-	// TODO: also check methods and locales
+	// TODO: also check support for methods and locales
+	// Number.prototype.toLocaleString()
+	// Date.prototype.toLocaleTimeString()
+	// Date.prototype.toLocaleDateString()
+	// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date/toLocaleDateString#Checking_for_support_for_locales_and_options_arguments
 	static isSupported() {
 		return 'Intl' in root;
 	}
