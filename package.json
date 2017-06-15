@@ -9,13 +9,16 @@
   "main": "dist/vi18n.min.js",
   "homepage": "https://github.com/vicompany/vi18n",
   "scripts": {
-    "build:js": "babel src -d dist",
-    "build": "npm run clean && npm run build:js && npm run minify",
+    "build": "npm run clean && npm run compile && npm run minify",
     "clean": "rimraf dist/*",
-    "lint": "eslint src/*.js --fix",
-    "minify": "uglifyjs dist/vi18n.js --compress --mangle --source-map --output dist/vi18n.min.js",
-    "test": "nyc ava",
+    "compile": "babel src -d dist",
     "coveralls": "nyc report --reporter=text-lcov | coveralls",
+    "lint": "eslint src",
+    "minify": "uglifyjs dist/vi18n.js --compress --mangle --source-map --output dist/vi18n.min.js",
+    "preversion": "npm run lint && npm run test",
+    "postversion": "git push && git push --tags",
+    "prepublish": "npm run build",
+    "test": "nyc ava",
     "watch": "ava --watch"
   },
   "keywords": [
