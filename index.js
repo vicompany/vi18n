@@ -23,6 +23,15 @@ const locales = {};
 
 const isObject = obj => Object.prototype.toString.call(obj) === '[object Object]';
 
+const isSupported = (
+	'Intl' in root &&
+	typeof Intl.NumberFormat === 'function' &&
+	typeof Intl.DateTimeFormat === 'function' &&
+	typeof Number.prototype.toLocaleString === 'function' &&
+	typeof Date.prototype.toLocaleDateString === 'function' &&
+	typeof Date.prototype.toLocaleTimeString === 'function'
+);
+
 class VI18N {
 	constructor(locale = 'nl-NL', currency = 'EUR' /* options = {} */) {
 		// Fail fast when the Internationalization API isn't supported
@@ -151,13 +160,8 @@ class VI18N {
 		return locales[locale];
 	}
 
-	// TODO: also check support for methods and locales
-	// Number.prototype.toLocaleString()
-	// Date.prototype.toLocaleTimeString()
-	// Date.prototype.toLocaleDateString()
-	// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date/toLocaleDateString#Checking_for_support_for_locales_and_options_arguments
 	static isSupported() {
-		return 'Intl' in root;
+		return isSupported;
 	}
 }
 
