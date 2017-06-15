@@ -7,22 +7,24 @@ Simple number, currency, type and date formatters based on the [Internationaliza
 
 ## Requirements
 
-* A [polyfill](https://github.com/andyearnshaw/Intl.js) when supporting [older browsers](http://caniuse.com/#feat=internationalization).
-* Or use the Financial Times polyfill service at https://cdn.polyfill.io.
+* [**Intl** object (ECMAScript Internationalization API)](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Intl) see the [support](http://caniuse.com/#feat=internationalization).
+  * You can include the [polyfill](https://github.com/andyearnshaw/Intl.js) when supporting older environments.
+  * Or use the Financial Times polyfill service at [cdn.polyfill.io](https://cdn.polyfill.io).
 
 ## Installation
 
-Clone the project or download the zip. Include the file from the *dist* folder in you project and create one or more locales. Don't forget to include a polyfill when supporting older browsers!
+```
+npm install --save vi18n // or --save-dev
+```
 
 ## Examples
 
 ### Creating a locale
 ```javascript
-define(['vi18n'], function(VI18N) {
+import VI18N from 'vi18n';
   
-  var nl = new VI18N(), // Default locale is Dutch with the Euro as currency
-      uk = new VI18N('en-GB', 'GBP');
-});
+const nl = new VI18N(); // Default locale is Dutch with the Euro as currency
+const uk = new VI18N('en-GB', 'GBP');
 ```
 
 ### Number formatting
