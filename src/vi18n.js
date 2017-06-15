@@ -1,5 +1,5 @@
 /* istanbul ignore next */
-const root = (() => {
+const root = (function() {
 	if (typeof window !== 'undefined') {
 		// Browser window
 		return window;
@@ -17,7 +17,7 @@ const root = (() => {
 
 	// Other environments
 	return this; // eslint-disable-line no-invalid-this
-})();
+}());
 
 const locales = {};
 
