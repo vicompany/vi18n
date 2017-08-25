@@ -1,5 +1,6 @@
 # VI18N
 
+[![npm](https://img.shields.io/npm/v/vi18n.svg)](https://npm.im/vi18n)
 [![Build Status](https://travis-ci.org/vicompany/vi18n.svg)](https://travis-ci.org/vicompany/vi18n)
 [![Coverage Status](https://coveralls.io/repos/vicompany/vi18n/badge.svg?branch=master&service=github)](https://coveralls.io/github/vicompany/vi18n?branch=master)
 
@@ -22,7 +23,7 @@ npm install --save vi18n // or --save-dev
 ### Creating a locale
 ```javascript
 import VI18N from 'vi18n';
-  
+
 const nl = new VI18N(); // Default locale is Dutch with the Euro as currency
 const uk = new VI18N('en-GB', 'GBP');
 ```
