@@ -23,24 +23,20 @@ const locales = {};
 
 const isObject = obj => Object.prototype.toString.call(obj) === '[object Object]';
 
-const isSupported = (
-	'Intl' in root &&
+const isSupported = 'Intl' in root &&
 	typeof Intl.NumberFormat === 'function' &&
 	typeof Intl.DateTimeFormat === 'function' &&
 	typeof Number.prototype.toLocaleString === 'function' &&
 	typeof Date.prototype.toLocaleDateString === 'function' &&
-	typeof Date.prototype.toLocaleTimeString === 'function'
-);
+	typeof Date.prototype.toLocaleTimeString === 'function';
 
+/* istanbul ignore if */
 class VI18N {
-	constructor(locale = 'nl-NL', currency = 'EUR' /* options = {} */) {
+	constructor(locale = 'nl-NL', currency = 'EUR') {
 		// Fail fast when the Internationalization API isn't supported
-		/* istanbul ignore if */
 		if (!VI18N.isSupported()) {
 			throw new Error('Internationalization API not supported, did you forget to include a polyfill?');
 		}
-
-		// const { locale = 'nl-NL', currency = 'EUR' } = options;
 
 		this.locale = locale;
 		this.currency = currency;
