@@ -7,31 +7,33 @@ Simple number, currency, type and date formatters based on the [Internationaliza
 
 ## Requirements
 
-* A [polyfill](https://github.com/andyearnshaw/Intl.js) when supporting [older browsers](http://caniuse.com/#feat=internationalization).
-* Or use the Financial Times polyfill service at https://cdn.polyfill.io.
+* [**Intl** object (ECMAScript Internationalization API)](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Intl) see the [support](http://caniuse.com/#feat=internationalization).
+  * You can include the [polyfill](https://github.com/andyearnshaw/Intl.js) when supporting older environments.
+  * Or use the Financial Times polyfill service at [cdn.polyfill.io](https://cdn.polyfill.io).
 
-##Installation
+## Installation
 
-Clone the project or download the zip. Include the file from the *dist* folder in you project and create one or more locales. Don't forget to include a polyfill when supporting older browsers!
-
-##Examples
-
-###Creating a locale
-```javascript
-define(['vi18n'], function(VI18N) {
-  
-  var nl = new VI18N(), // Default locale is Dutch with the Euro as currency
-      uk = new VI18N('en-GB', 'GBP');
-});
+```
+npm install --save vi18n // or --save-dev
 ```
 
-###Number formatting
+## Examples
+
+### Creating a locale
+```javascript
+import VI18N from 'vi18n';
+  
+const nl = new VI18N(); // Default locale is Dutch with the Euro as currency
+const uk = new VI18N('en-GB', 'GBP');
+```
+
+### Number formatting
 ```javascript
 nl.formatNumber(12.50); // '12,50'
 uk.formatNumber(12.50); // '12.50'
 ```
 
-###Currency formatting
+### Currency formatting
 ```javascript
 nl.formatCurrency(12.50); // '€ 12,50'
 uk.formatCurrency(12.50); // '£12.50'
@@ -40,22 +42,18 @@ uk.formatCurrency(12.50); // '£12.50'
 nl.formatCurrency(12.50, { currency: 'JPY' }); // 'JP¥ 12,50'
 uk.formatCurrency(12.50, { currency: 'JPY' }); // '¥12.50'
 
-// Without currency symbol
-nl.formatCurrency(12.50, { currency: false }); // '12,50'
-uk.formatCurrency(12.50, { currency: false }); // '12.50'
-
-// or without decimals
+// Or without decimals
 nl.formatCurrency(12.50, { minimumFractionDigits: 0, maximumFractionDigits: 0 }); // '€ 12'
 uk.formatCurrency(12.50, { currency: 'JPY', minimumFractionDigits: 0, maximumFractionDigits: 0 }); // '¥12'
 ```
 
-###Percent formatting
+### Percent formatting
 ```javascript
 nl.formatPercent(0.75); // '75%'
 uk.formatPercent(0.75); // '75%'
 ```
 
-###Date and time formatting
+### Date and time formatting
 ```javascript
 var date = new Date();
 
@@ -66,13 +64,13 @@ nl.formatTime(date); // '12:38:09'
 uk.formatTime(date); // '12:38:09'
 ```
 
-###Decimal and thousand separator
+### Decimal and thousand separator
 ```javascript
 nl.getDecimalSeparator();   // ','
 nl.getThousandSeparator();  // '.'
 ```
 
-###Months and days
+### Months and days
 ```javascript
 // Possible representations are 'narrow', 'short' or 'long' (default).
 
@@ -85,7 +83,7 @@ uk.getDays('short')     // [ 'Sun', 'Mon', 'Tue', etc. ]
 uk.getDays('narrow')    // [ 'S', 'M', 'T', etc. ]
 ```
 
-###Static methods
+### Static methods
 ```javascript
 // Get locale instances
 var dutch = VI18N.getLocale('nl-NL');
