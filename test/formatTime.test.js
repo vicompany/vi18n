@@ -1,6 +1,6 @@
 import test from 'ava';
 
-import VI18N from '../';
+import VI18N from '../src';
 
 // Disabled untill use of timezone option:
 // https://github.com/vicompany/vi18n/issues/19

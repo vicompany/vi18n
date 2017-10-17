@@ -1,6 +1,6 @@
 import test from 'ava';
 
-import VI18N from '../';
+import VI18N from '../src';
 
 let locale;
 
