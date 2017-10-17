@@ -2,16 +2,19 @@
   "name": "vi18n",
   "version": "2.0.0",
   "description": "Simple number, currency and date formatters based on the Internationalization API",
+  "main": "lib/index.js",
   "repository": "vicompany/vi18n",
   "engines": {
     "node": ">=6"
   },
   "scripts": {
+    "build": "babel src -d lib",
     "coveralls": "nyc report --reporter=text-lcov | coveralls",
-    "lint": "eslint index.js",
-    "test": "nyc ava",
+    "lint": "eslint src",
     "preversion": "npm run lint && npm run test",
-    "postversion": "git push && git push --tags",
+    "postversion": "git push --follow-tags",
+    "prepublish": "npm run build",
+    "test": "nyc ava",
     "watch": "ava --watch"
   },
   "keywords": [
@@ -24,13 +27,15 @@
   "license": "MIT",
   "devDependencies": {
     "ava": "^0.22.0",
-    "coveralls": "^2.13.1",
-    "eslint": "^4.5.0",
-    "eslint-config-vi": "^7.2.0",
+    "babel-cli": "^6.26.0",
+    "babel-preset-es2015": "^6.24.1",
+    "coveralls": "^3.0.0",
+    "eslint": "^4.9.0",
+    "eslint-config-vi": "^8.1.0",
     "intl": "^1.2.5",
     "intl-locales-supported": "^1.0.0",
-    "nyc": "^11.1.0",
-    "sinon": "^3.2.1"
+    "nyc": "^11.2.1",
+    "sinon": "^4.0.1"
   },
   "ava": {
     "files": [

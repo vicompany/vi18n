@@ -8,7 +8,7 @@ insert_final_newline = true
 max_line_length = 80
 trim_trailing_whitespace = true
 
-[*.{json,yml,eslintrc}]
+[*.{json,yml,eslintrc,babelrc}]
 indent_style = space
 indent_size = 2
 

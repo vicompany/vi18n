@@ -1,7 +1,7 @@
 import test from 'ava';
 import sinon from 'sinon';
 
-import VI18N from '../';
+import VI18N from '../src';
 
 let locale;
 
