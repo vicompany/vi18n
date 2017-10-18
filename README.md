@@ -15,7 +15,7 @@ Simple number, currency, type and date formatters based on the [Internationaliza
 ## Installation
 
 ```
-npm install --save vi18n // or --save-dev
+npm install --save vi18n
 ```
 
 ## Examples
@@ -24,7 +24,7 @@ npm install --save vi18n // or --save-dev
 ```javascript
 import VI18N from 'vi18n';
 
-const nl = new VI18N(); // Default locale is Dutch with the Euro as currency
+const nl = new VI18N(); // Default locale is 'nl-NL' (Dutch) with 'EUR' (Euro) as currency
 const uk = new VI18N('en-GB', 'GBP');
 ```
 
