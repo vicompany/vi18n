@@ -19,8 +19,6 @@ const root = (function() {
 	return this; // eslint-disable-line no-invalid-this
 }());
 
-const locales = {};
-
 const isObject = obj => Object.prototype.toString.call(obj) === '[object Object]';
 
 const isSupported = 'Intl' in root &&
@@ -50,9 +48,6 @@ class VI18N {
 		this.days = {};
 		this.decimalSeparator = null;
 		this.thousandSeparator = null;
-
-		// Keep track of this instance
-		locales[locale] = this;
 
 		this.initialize(locale, currency, timeZone, { hour, minute, second });
 	}
@@ -182,10 +177,6 @@ class VI18N {
 
 			return days;
 		})());
-	}
-
-	static getLocale(locale) {
-		return locales[locale];
 	}
 
 	static isSupported() {

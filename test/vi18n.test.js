@@ -22,14 +22,6 @@ test('Constructor checks "Intl" support', (t) => {
 	t.true(VI18N.isSupported.calledOnce);
 });
 
-test('VI18N.getLocale() returns locale instances', (t) => {
-	const nl = new VI18N();
-	const en = new VI18N('en-GB', 'GPB');
-
-	t.is(VI18N.getLocale('nl-NL'), nl);
-	t.is(VI18N.getLocale('en-GB'), en);
-});
-
 test('locale.getMonths()', (t) => {
 	const months = locale.getMonths();
 
