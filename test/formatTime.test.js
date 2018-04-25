@@ -2,11 +2,14 @@ import test from 'ava';
 
 import VI18N from '../src';
 
-// Disabled untill use of timezone option:
-// https://github.com/vicompany/vi18n/issues/19
-test('formats 15 past 3 and 45 seconds to "3:15:45"', (t) => {
+test('formats 15 past 3 and 45 seconds according to timezone"', (t) => {
 	const date = new Date(Date.UTC(2016, 0, 7, 2, 15, 45));
-	const locale = new VI18N();
 
-	t.is(locale.formatTime(date), '03:15:45');
+	const nl = new VI18N();
+	const uk = new VI18N('en-GB', 'GBP', { timeZone: 'etc/UTC' });
+	const us = new VI18N('us-US', 'USD', { timeZone: 'America/New_York' });
+
+	t.is(nl.formatTime(date), '03:15:45');
+	t.is(uk.formatTime(date), '02:15:45');
+	t.is(us.formatTime(date), '21:15:45');
 });

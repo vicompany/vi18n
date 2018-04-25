@@ -32,7 +32,12 @@ const isSupported = 'Intl' in root &&
 
 /* istanbul ignore if */
 class VI18N {
-	constructor(locale = 'nl-NL', currency = 'EUR') {
+	constructor(locale = 'nl-NL', currency = 'EUR', {
+		timeZone = 'Europe/Amsterdam',
+		hour = '2-digit',
+		minute = '2-digit',
+		second = '2-digit',
+	} = {}) {
 		// Fail fast when the Internationalization API isn't supported
 		if (!VI18N.isSupported()) {
 			throw new Error('Internationalization API not supported, did you forget to include a polyfill?');
@@ -49,30 +54,39 @@ class VI18N {
 		// Keep track of this instance
 		locales[locale] = this;
 
-		this.initialize(locale, currency);
+		this.initialize(locale, currency, timeZone, { hour, minute, second });
 	}
 
-	initialize(locale, currency) {
+	initialize(locale, currency, localeTimeZone, { hour, minute, second }) {
 		this.formatters.number = new Intl.NumberFormat(locale);
-		this.formatters.currency = new Intl.NumberFormat(locale, {
-			style: 'currency',
-			currency,
+		this.formatters.currency = new Intl.NumberFormat(locale, { style: 'currency', currency });
+		this.formatters.percent = new Intl.NumberFormat(locale, { style: 'percent' });
+		this.formatters.date = new Intl.DateTimeFormat(locale, {
+			timeZone: localeTimeZone,
 		});
-		this.formatters.percent = new Intl.NumberFormat(locale, {
-			style: 'percent',
-		});
-		this.formatters.date = new Intl.DateTimeFormat(locale);
 
-		const { year, month, day } = this.formatters.date.resolvedOptions();
-
-		this.formatters.dateTime = new Intl.DateTimeFormat(locale, {
-			timeZone: 'Europe/Amsterdam',
+		const {
 			year,
 			month,
 			day,
-			hour: '2-digit',
-			minute: '2-digit',
-			second: '2-digit',
+			timeZone,
+		} = this.formatters.date.resolvedOptions();
+
+		this.formatters.time = new Intl.DateTimeFormat(locale, {
+			timeZone,
+			hour,
+			minute,
+			second,
+		});
+
+		this.formatters.dateTime = new Intl.DateTimeFormat(locale, {
+			timeZone,
+			year,
+			month,
+			day,
+			hour,
+			minute,
+			second,
 		});
 	}
 
@@ -116,8 +130,8 @@ class VI18N {
 			: this.formatters.date.format(date);
 	}
 
-	formatTime(date, options = {}) {
-		return date.toLocaleTimeString(this.locale, options);
+	formatTime(date) {
+		return this.formatters.time.format(date);
 	}
 
 	formatDateTime(date, options) {
