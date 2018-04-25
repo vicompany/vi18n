@@ -35,6 +35,8 @@ class VI18N {
 		hour = '2-digit',
 		minute = '2-digit',
 		second = '2-digit',
+		minimumFractionDigits = 2,
+		maximumFractionDigits = 2,
 	} = {}) {
 		// Fail fast when the Internationalization API isn't supported
 		if (!VI18N.isSupported()) {
@@ -49,11 +51,29 @@ class VI18N {
 		this.decimalSeparator = null;
 		this.thousandSeparator = null;
 
-		this.initialize(locale, currency, timeZone, { hour, minute, second });
+		this.initialize(locale, currency, timeZone, {
+			hour,
+			minute,
+			second,
+			minimumFractionDigits,
+			maximumFractionDigits,
+		});
 	}
 
-	initialize(locale, currency, localeTimeZone, { hour, minute, second }) {
-		this.formatters.number = new Intl.NumberFormat(locale);
+	initialize(locale, currency, localeTimeZone, options = {}) {
+		const {
+			hour,
+			minute,
+			second,
+			minimumFractionDigits,
+			maximumFractionDigits,
+		} = options;
+
+		this.formatters.number = new Intl.NumberFormat(locale, {
+			minimumFractionDigits,
+			maximumFractionDigits,
+		});
+
 		this.formatters.currency = new Intl.NumberFormat(locale, { style: 'currency', currency });
 		this.formatters.percent = new Intl.NumberFormat(locale, { style: 'percent' });
 		this.formatters.date = new Intl.DateTimeFormat(locale, {
