@@ -62,6 +62,17 @@ class VI18N {
 			style: 'percent',
 		});
 		this.formatters.date = new Intl.DateTimeFormat(locale);
+
+		const { year, month, day } = this.formatters.date.resolvedOptions();
+
+		this.formatters.dateTime = new Intl.DateTimeFormat(locale, {
+			year,
+			month,
+			day,
+			hour: '2-digit',
+			minute: '2-digit',
+			second: '2-digit',
+		});
 	}
 
 	// Format a number to a locale string
@@ -106,6 +117,12 @@ class VI18N {
 
 	formatTime(date, options = {}) {
 		return date.toLocaleTimeString(this.locale, options);
+	}
+
+	formatDateTime(date, options) {
+		return isObject(options)
+			? date.toLocaleDateString(this.locale, options)
+			: this.formatters.dateTime.format(date);
 	}
 
 	// Assume it is always one character
