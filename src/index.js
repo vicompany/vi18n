@@ -66,6 +66,7 @@ class VI18N {
 		const { year, month, day } = this.formatters.date.resolvedOptions();
 
 		this.formatters.dateTime = new Intl.DateTimeFormat(locale, {
+			timeZone: 'Europe/Amsterdam',
 			year,
 			month,
 			day,
