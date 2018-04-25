@@ -45,6 +45,12 @@ test('locale.getDecimalSeparator()', (t) => {
 
 	t.is(typeof separator, 'string');
 	t.is(separator, ',');
+
+	const ch = new VI18N('de-ch', 'CHF');
+	const chSeparator = ch.getDecimalSeparator();
+
+	t.is(typeof chSeparator, 'string');
+	t.is(chSeparator, '.');
 });
 
 test('locale.getThousandSeparator()', (t) => {
@@ -52,4 +58,10 @@ test('locale.getThousandSeparator()', (t) => {
 
 	t.is(typeof separator, 'string');
 	t.is(separator, '.');
+
+	const ch = new VI18N('de-ch', 'CHF');
+	const chSeparator = ch.getThousandSeparator();
+
+	t.is(typeof chSeparator, 'string');
+	t.is(chSeparator, '’');
 });

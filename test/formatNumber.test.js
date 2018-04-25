@@ -11,7 +11,7 @@ test('formats 100 to "100"', (t) => {
 test('formats 1000 to "1.000"', (t) => {
 	const nl = new VI18N('nl-NL', 'EUR', { minimumFractionDigits: 0 });
 	const uk = new VI18N('en-GB', 'GBP', { minimumFractionDigits: 0 });
-	const ch = new VI18N('de-ch', 'GBP', { minimumFractionDigits: 0 });
+	const ch = new VI18N('de-ch', 'CHF', { minimumFractionDigits: 0 });
 
 	t.is(nl.formatNumber(1000), '1.000');
 	t.is(uk.formatNumber(1000), '1,000');
@@ -21,7 +21,7 @@ test('formats 1000 to "1.000"', (t) => {
 test('formats 1000000 to "1.000.000"', (t) => {
 	const nl = new VI18N('nl-NL', 'EUR', { minimumFractionDigits: 0 });
 	const uk = new VI18N('en-GB', 'GBP', { minimumFractionDigits: 0 });
-	const ch = new VI18N('de-ch', 'GBP', { minimumFractionDigits: 0 });
+	const ch = new VI18N('de-ch', 'CHF', { minimumFractionDigits: 0 });
 
 	t.is(nl.formatNumber(1000000), '1.000.000');
 	t.is(uk.formatNumber(1000000), '1,000,000');

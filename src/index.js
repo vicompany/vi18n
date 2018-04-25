@@ -157,6 +157,7 @@ class VI18N {
 
 	// Assume it is always one character
 	// https://en.wikipedia.org/wiki/Decimal_mark
+	// TODO: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/NumberFormat/formatToParts#Browser_compatibility
 	getDecimalSeparator() {
 		return this.decimalSeparator || (this.decimalSeparator = this.formatNumber(1.1).charAt(1)); // eslint-disable-line max-len
 	}
