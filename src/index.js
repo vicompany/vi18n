@@ -46,7 +46,13 @@ class VI18N {
 		this.initialize(locale, time, number, percent, currency);
 	}
 
-	initialize(locale, timeOptions, numberOptions, percentOptions, currencyOptions) {
+	initialize(
+		locale,
+		timeOptions,
+		numberOptions,
+		percentOptions,
+		currencyOptions
+	) {
 		const {
 			timeZone = 'Europe/Amsterdam',
 			hour = '2-digit',
