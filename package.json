@@ -14,8 +14,8 @@
     "preversion": "npm run lint && npm run test",
     "postversion": "git push --follow-tags",
     "prepublishOnly": "npm run build",
-    "test": "nyc ava",
-    "watch": "ava --watch"
+    "test": "cross-env NODE_ICU_DATA=node_modules/full-icu nyc ava",
+    "watch": "cross-env NODE_ICU_DATA=node_modules/full-icu ava --watch"
   },
   "keywords": [
     "i18n",
