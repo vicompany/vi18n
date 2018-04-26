@@ -2,7 +2,6 @@ import test from 'ava';
 
 import VI18N from '../src';
 
-
 test('formats 100 to "€ 100,00"', (t) => {
 	const locale = new VI18N('nl-NL');
 
@@ -61,13 +60,13 @@ test('formats 1000 to "€ 1.000"', (t) => {
 
 // other currencies
 test('formats 100 US dollars to "US$ 100,00"', (t) => {
-	const locale = new VI18N('en-US', { currency: { currency: 'USD' } });
+	const locale = new VI18N('nl-NL', { currency: { currency: 'USD', minimumFractionDigits: 0, maximumFractionDigits: 0 } });
 
-	t.is(locale.formatCurrency(100), 'US$ 100,00');
+	t.is(locale.formatCurrency(100), 'US$ 100');
 });
 
-test('formats 100 Japanese yen to "¥ 100"', (t) => {
-	const locale = new VI18N('ja', { currency: { currency: 'JPY' } });
+test('formats 100 Australian dollar to "AU$ 100"', (t) => {
+	const locale = new VI18N('nl-NL', { currency: { currency: 'AUD', minimumFractionDigits: 0, maximumFractionDigits: 0 } });
 
-	t.is(locale.formatCurrency(100), '￥100');
+	t.is(locale.formatCurrency(100), 'AU$ 100');
 });
