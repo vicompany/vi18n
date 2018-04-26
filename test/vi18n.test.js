@@ -9,9 +9,8 @@ test.beforeEach((t) => {
 	locale = new VI18N();
 });
 
-test('Constructor defaults to "nl-NL" locale with "EUR" as currency', (t) => {
+test('Constructor defaults to "nl-NL"', (t) => {
 	t.is(locale.locale, 'nl-NL');
-	t.is(locale.currency, 'EUR');
 });
 
 test('Constructor checks "Intl" support', (t) => {
@@ -20,14 +19,6 @@ test('Constructor checks "Intl" support', (t) => {
 	locale = new VI18N();
 
 	t.true(VI18N.isSupported.calledOnce);
-});
-
-test('VI18N.getLocale() returns locale instances', (t) => {
-	const nl = new VI18N();
-	const en = new VI18N('en-GB', 'GPB');
-
-	t.is(VI18N.getLocale('nl-NL'), nl);
-	t.is(VI18N.getLocale('en-GB'), en);
 });
 
 test('locale.getMonths()', (t) => {
@@ -53,6 +44,12 @@ test('locale.getDecimalSeparator()', (t) => {
 
 	t.is(typeof separator, 'string');
 	t.is(separator, ',');
+
+	const ch = new VI18N('de-ch');
+	const chSeparator = ch.getDecimalSeparator();
+
+	t.is(typeof chSeparator, 'string');
+	t.is(chSeparator, '.');
 });
 
 test('locale.getThousandSeparator()', (t) => {
@@ -60,4 +57,10 @@ test('locale.getThousandSeparator()', (t) => {
 
 	t.is(typeof separator, 'string');
 	t.is(separator, '.');
+
+	const ch = new VI18N('de-ch');
+	const chSeparator = ch.getThousandSeparator();
+
+	t.is(typeof chSeparator, 'string');
+	t.is(chSeparator, '’');
 });

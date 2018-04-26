@@ -24,9 +24,35 @@ npm install --save vi18n
 ```javascript
 import VI18N from 'vi18n';
 
-const nl = new VI18N(); // Default locale is 'nl-NL' (Dutch) with 'EUR' (Euro) as currency
-const uk = new VI18N('en-GB', 'GBP');
+// const locale = new VI18N(culture, options);
+
+const nl = new VI18N(); // Default locale is 'nl-NL' (Dutch)
+const uk = new VI18N('en-GB');
+
+// overriding default settings with options
+const ch = new VI18N('de-ch', { number: { maximumFractionDigits: 2 } });
+const nl = new VI18N('nl-NL', { percent: { minimumFractionDigits: 2 } });
+const jp = new VI18N('ja', { currency: { currency: 'JPY' } });
+
+const uk = new VI18N('en-GB', {
+  time: { timeZone: 'etc/UTC' },
+  currency: { currency: 'GBP' },
+});
+
+const us = new VI18N('en-US', {
+  time: { hour: 'numeric' },
+  currency: { currency: 'USD' } ,
+});
 ```
+
+The `options` parameter can contain the following configuration objects:
+- `number`
+- `percent`
+- `currency`
+- `time`
+
+See [MDN: NumberFormat](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/NumberFormat) for possible values for the `number`, `percent` and `currency` configuration objects.
+See [MDN: DateTimeFormat](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/DateTimeFormat) for possible values for the `time` configuration object.
 
 ### Number formatting
 ```javascript
@@ -38,14 +64,6 @@ uk.formatNumber(12.50); // '12.50'
 ```javascript
 nl.formatCurrency(12.50); // '€ 12,50'
 uk.formatCurrency(12.50); // '£12.50'
-
-// In another currency
-nl.formatCurrency(12.50, { currency: 'JPY' }); // 'JP¥ 12,50'
-uk.formatCurrency(12.50, { currency: 'JPY' }); // '¥12.50'
-
-// Or without decimals
-nl.formatCurrency(12.50, { minimumFractionDigits: 0, maximumFractionDigits: 0 }); // '€ 12'
-uk.formatCurrency(12.50, { currency: 'JPY', minimumFractionDigits: 0, maximumFractionDigits: 0 }); // '¥12'
 ```
 
 ### Percent formatting
@@ -86,9 +104,6 @@ uk.getDays('narrow')    // [ 'S', 'M', 'T', etc. ]
 
 ### Static methods
 ```javascript
-// Get locale instances
-var dutch = VI18N.getLocale('nl-NL');
-
 // Check for native browser support or the presence of a polyfill.
 VI18N.isSupported();
 ```

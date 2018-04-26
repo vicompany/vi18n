@@ -19,8 +19,6 @@ const root = (function() {
 	return this; // eslint-disable-line no-invalid-this
 }());
 
-const locales = {};
-
 const isObject = obj => Object.prototype.toString.call(obj) === '[object Object]';
 
 const isSupported = 'Intl' in root &&
@@ -32,67 +30,98 @@ const isSupported = 'Intl' in root &&
 
 /* istanbul ignore if */
 class VI18N {
-	constructor(locale = 'nl-NL', currency = 'EUR') {
+	constructor(locale = 'nl-NL', { time = {}, number = {}, percent = {}, currency = {} } = {}) {
 		// Fail fast when the Internationalization API isn't supported
 		if (!VI18N.isSupported()) {
 			throw new Error('Internationalization API not supported, did you forget to include a polyfill?');
 		}
 
 		this.locale = locale;
-		this.currency = currency;
 		this.formatters = {};
 		this.months = {};
 		this.days = {};
 		this.decimalSeparator = null;
 		this.thousandSeparator = null;
 
-		// Keep track of this instance
-		locales[locale] = this;
-
-		this.initialize(locale, currency);
+		this.initialize(locale, time, number, percent, currency);
 	}
 
-	initialize(locale, currency) {
-		this.formatters.number = new Intl.NumberFormat(locale);
-		this.formatters.currency = new Intl.NumberFormat(locale, {
-			style: 'currency',
-			currency,
+	initialize(
+		locale,
+		timeOptions,
+		numberOptions,
+		percentOptions,
+		currencyOptions
+	) {
+		const {
+			timeZone = 'Europe/Amsterdam',
+			hour = '2-digit',
+			minute = '2-digit',
+			second = '2-digit',
+		} = timeOptions;
+
+		this.formatters.number = new Intl.NumberFormat(locale, Object.assign(
+			{},
+			{
+				minimumFractionDigits: 0,
+				maximumFractionDigits: 3,
+			},
+			numberOptions
+		));
+
+		this.formatters.currency = new Intl.NumberFormat(locale, Object.assign(
+			{
+				currency: 'EUR',
+				style: 'currency',
+			},
+			currencyOptions
+		));
+
+		this.formatters.percent = new Intl.NumberFormat(locale, Object.assign(
+			{ style: 'percent' },
+			percentOptions,
+		));
+		this.formatters.date = new Intl.DateTimeFormat(locale, {
+			timeZone,
 		});
-		this.formatters.percent = new Intl.NumberFormat(locale, {
-			style: 'percent',
+
+		const {
+			year,
+			month,
+			day,
+		} = this.formatters.date.resolvedOptions();
+
+		this.formatters.time = new Intl.DateTimeFormat(locale, {
+			timeZone,
+			hour,
+			minute,
+			second,
 		});
-		this.formatters.date = new Intl.DateTimeFormat(locale);
+
+		this.formatters.dateTime = new Intl.DateTimeFormat(locale, {
+			timeZone,
+			year,
+			month,
+			day,
+			hour,
+			minute,
+			second,
+		});
 	}
 
 	// Format a number to a locale string
 	// For more information about the options see https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/NumberFormat
-	formatNumber(number, options) {
-		return isObject(options)
-			? number.toLocaleString(this.locale, options)
-			: this.formatters.number.format(number);
+	formatNumber(number) {
+		return this.formatters.number.format(number);
 	}
 
 	// Format a number to a locale currency string
 	// For more information about the options see https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/NumberFormat
-	formatCurrency(number, options) {
-		if (isObject(options)) {
-			const { style = 'currency', currency = this.currency } = options;
-
-			Object.assign(options, { style, currency });
-
-			return number.toLocaleString(this.locale, options);
-		}
-
+	formatCurrency(number) {
 		return this.formatters.currency.format(number);
 	}
 
-	formatPercent(number, options) {
-		if (isObject(options)) {
-			options.style = 'percent';
-
-			return number.toLocaleString(this.locale, options);
-		}
-
+	formatPercent(number) {
 		return this.formatters.percent.format(number);
 	}
 
@@ -104,12 +133,17 @@ class VI18N {
 			: this.formatters.date.format(date);
 	}
 
-	formatTime(date, options = {}) {
-		return date.toLocaleTimeString(this.locale, options);
+	formatTime(date) {
+		return this.formatters.time.format(date);
+	}
+
+	formatDateTime(date, options) {
+		return this.formatters.dateTime.format(date);
 	}
 
 	// Assume it is always one character
 	// https://en.wikipedia.org/wiki/Decimal_mark
+	// TODO: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/NumberFormat/formatToParts#Browser_compatibility
 	getDecimalSeparator() {
 		return this.decimalSeparator || (this.decimalSeparator = this.formatNumber(1.1).charAt(1)); // eslint-disable-line max-len
 	}
@@ -150,10 +184,6 @@ class VI18N {
 
 			return days;
 		})());
-	}
-
-	static getLocale(locale) {
-		return locales[locale];
 	}
 
 	static isSupported() {
