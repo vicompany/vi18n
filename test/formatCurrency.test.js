@@ -61,7 +61,7 @@ test('formats 1000 to "€ 1.000"', (t) => {
 
 // other currencies
 test('formats 100 US dollars to "US$ 100,00"', (t) => {
-	const locale = new VI18N('us-US', { currency: { currency: 'USD' } });
+	const locale = new VI18N('en-US', { currency: { currency: 'USD' } });
 
 	t.is(locale.formatCurrency(100), 'US$ 100,00');
 });

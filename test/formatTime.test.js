@@ -7,7 +7,7 @@ test('formats 15 past 3 and 45 seconds according to timezone"', (t) => {
 
 	const nl = new VI18N();
 	const uk = new VI18N('en-GB', { time: { timeZone: 'etc/UTC' } });
-	const us = new VI18N('us-US', { time: { timeZone: 'America/New_York' } });
+	const us = new VI18N('en-US', { time: { timeZone: 'America/New_York' } });
 
 	t.is(nl.formatTime(date), '03:15:45');
 	t.is(uk.formatTime(date), '02:15:45');

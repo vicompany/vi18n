@@ -4,7 +4,7 @@ import VI18N from '../src';
 
 test('formats 100 to "100"', (t) => {
 	const nl = new VI18N('nl-NL');
-	const us = new VI18N('us-US');
+	const us = new VI18N('en-US');
 
 	t.is(nl.formatNumber(100), '100');
 	t.is(us.formatNumber(100), '100');

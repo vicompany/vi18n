@@ -39,7 +39,7 @@ const uk = new VI18N('en-GB', {
   currency: { currency: 'GBP' },
 });
 
-const us = new VI18N('us-US', {
+const us = new VI18N('en-US', {
   time: { hour: 'numeric' },
   currency: { currency: 'USD' } ,
 });
@@ -51,7 +51,7 @@ The `options` parameter can contain the following configuration objects:
 - `currency`
 - `time`
 
-See [MDN: NumberFormat](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/NumberFormat) for possible values for the `number`, `percent` and `currency` configuration objects.  
+See [MDN: NumberFormat](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/NumberFormat) for possible values for the `number`, `percent` and `currency` configuration objects.
 See [MDN: DateTimeFormat](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/DateTimeFormat) for possible values for the `time` configuration object.
 
 ### Number formatting
