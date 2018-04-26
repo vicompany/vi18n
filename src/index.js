@@ -46,7 +46,6 @@ class VI18N {
 		this.initialize(locale, time, number, percent, currency);
 	}
 
-	// eslint-disable-next-line
 	initialize(locale, timeOptions, numberOptions, percentOptions, currencyOptions) {
 		const {
 			timeZone = 'Europe/Amsterdam',
@@ -133,9 +132,7 @@ class VI18N {
 	}
 
 	formatDateTime(date, options) {
-		return isObject(options)
-			? date.toLocaleDateString(this.locale, options)
-			: this.formatters.dateTime.format(date);
+		return this.formatters.dateTime.format(date);
 	}
 
 	// Assume it is always one character
