@@ -30,25 +30,24 @@ const isSupported = 'Intl' in root &&
 
 /* istanbul ignore if */
 class VI18N {
-	constructor(locale = 'nl-NL', currency = 'EUR', { time = {}, number = {}, percent = {}, currency: currencyOptions = {} } = {}) {
+	constructor(locale = 'nl-NL', { time = {}, number = {}, percent = {}, currency = {} } = {}) {
 		// Fail fast when the Internationalization API isn't supported
 		if (!VI18N.isSupported()) {
 			throw new Error('Internationalization API not supported, did you forget to include a polyfill?');
 		}
 
 		this.locale = locale;
-		this.currency = currency;
 		this.formatters = {};
 		this.months = {};
 		this.days = {};
 		this.decimalSeparator = null;
 		this.thousandSeparator = null;
 
-		this.initialize(locale, currency, time, number, percent, currencyOptions);
+		this.initialize(locale, time, number, percent, currency);
 	}
 
 	// eslint-disable-next-line
-	initialize(locale, currency, timeOptions, numberOptions, percentOptions, currencyOptions) {
+	initialize(locale, timeOptions, numberOptions, percentOptions, currencyOptions) {
 		const {
 			timeZone = 'Europe/Amsterdam',
 			hour = '2-digit',
@@ -67,13 +66,12 @@ class VI18N {
 
 		this.formatters.currency = new Intl.NumberFormat(locale, Object.assign(
 			{
-				currency,
+				currency: 'EUR',
 				style: 'currency',
 			},
 			currencyOptions
 		));
 
-		// TODO: check if percent needs numberOptions
 		this.formatters.percent = new Intl.NumberFormat(locale, Object.assign(
 			{ style: 'percent' },
 			percentOptions,

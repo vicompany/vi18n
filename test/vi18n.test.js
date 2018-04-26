@@ -9,9 +9,8 @@ test.beforeEach((t) => {
 	locale = new VI18N();
 });
 
-test('Constructor defaults to "nl-NL" locale with "EUR" as currency', (t) => {
+test('Constructor defaults to "nl-NL"', (t) => {
 	t.is(locale.locale, 'nl-NL');
-	t.is(locale.currency, 'EUR');
 });
 
 test('Constructor checks "Intl" support', (t) => {
@@ -46,7 +45,7 @@ test('locale.getDecimalSeparator()', (t) => {
 	t.is(typeof separator, 'string');
 	t.is(separator, ',');
 
-	const ch = new VI18N('de-ch', 'CHF');
+	const ch = new VI18N('de-ch');
 	const chSeparator = ch.getDecimalSeparator();
 
 	t.is(typeof chSeparator, 'string');
@@ -59,7 +58,7 @@ test('locale.getThousandSeparator()', (t) => {
 	t.is(typeof separator, 'string');
 	t.is(separator, '.');
 
-	const ch = new VI18N('de-ch', 'CHF');
+	const ch = new VI18N('de-ch');
 	const chSeparator = ch.getThousandSeparator();
 
 	t.is(typeof chSeparator, 'string');
