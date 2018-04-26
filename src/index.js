@@ -30,14 +30,7 @@ const isSupported = 'Intl' in root &&
 
 /* istanbul ignore if */
 class VI18N {
-	constructor(locale = 'nl-NL', currency = 'EUR', {
-		timeZone = 'Europe/Amsterdam',
-		hour = '2-digit',
-		minute = '2-digit',
-		second = '2-digit',
-		minimumFractionDigits = 2,
-		maximumFractionDigits = 2,
-	} = {}) {
+	constructor(locale = 'nl-NL', currency = 'EUR', { time = {}, number = {}, percent = {}, currency: currencyOptions = {} } = {}) {
 		// Fail fast when the Internationalization API isn't supported
 		if (!VI18N.isSupported()) {
 			throw new Error('Internationalization API not supported, did you forget to include a polyfill?');
@@ -51,40 +44,48 @@ class VI18N {
 		this.decimalSeparator = null;
 		this.thousandSeparator = null;
 
-		this.initialize(locale, currency, timeZone, {
-			hour,
-			minute,
-			second,
-			minimumFractionDigits,
-			maximumFractionDigits,
-		});
+		this.initialize(locale, currency, time, number, percent, currencyOptions);
 	}
 
-	initialize(locale, currency, localeTimeZone, options = {}) {
+	// eslint-disable-next-line
+	initialize(locale, currency, timeOptions, numberOptions, percentOptions, currencyOptions) {
 		const {
-			hour,
-			minute,
-			second,
-			minimumFractionDigits,
-			maximumFractionDigits,
-		} = options;
+			timeZone = 'Europe/Amsterdam',
+			hour = '2-digit',
+			minute = '2-digit',
+			second = '2-digit',
+		} = timeOptions;
 
-		this.formatters.number = new Intl.NumberFormat(locale, {
-			minimumFractionDigits,
-			maximumFractionDigits,
-		});
+		this.formatters.number = new Intl.NumberFormat(locale, Object.assign(
+			{},
+			{
+				minimumFractionDigits: 0,
+				maximumFractionDigits: 3,
+			},
+			numberOptions
+		));
 
-		this.formatters.currency = new Intl.NumberFormat(locale, { style: 'currency', currency });
-		this.formatters.percent = new Intl.NumberFormat(locale, { style: 'percent' });
+		this.formatters.currency = new Intl.NumberFormat(locale, Object.assign(
+			{
+				currency,
+				style: 'currency',
+			},
+			currencyOptions
+		));
+
+		// TODO: check if percent needs numberOptions
+		this.formatters.percent = new Intl.NumberFormat(locale, Object.assign(
+			{ style: 'percent' },
+			percentOptions,
+		));
 		this.formatters.date = new Intl.DateTimeFormat(locale, {
-			timeZone: localeTimeZone,
+			timeZone,
 		});
 
 		const {
 			year,
 			month,
 			day,
-			timeZone,
 		} = this.formatters.date.resolvedOptions();
 
 		this.formatters.time = new Intl.DateTimeFormat(locale, {
@@ -107,33 +108,17 @@ class VI18N {
 
 	// Format a number to a locale string
 	// For more information about the options see https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/NumberFormat
-	formatNumber(number, options) {
-		return isObject(options)
-			? number.toLocaleString(this.locale, options)
-			: this.formatters.number.format(number);
+	formatNumber(number) {
+		return this.formatters.number.format(number);
 	}
 
 	// Format a number to a locale currency string
 	// For more information about the options see https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/NumberFormat
-	formatCurrency(number, options) {
-		if (isObject(options)) {
-			const { style = 'currency', currency = this.currency } = options;
-
-			Object.assign(options, { style, currency });
-
-			return number.toLocaleString(this.locale, options);
-		}
-
+	formatCurrency(number) {
 		return this.formatters.currency.format(number);
 	}
 
-	formatPercent(number, options) {
-		if (isObject(options)) {
-			options.style = 'percent';
-
-			return number.toLocaleString(this.locale, options);
-		}
-
+	formatPercent(number) {
 		return this.formatters.percent.format(number);
 	}
 
