@@ -2,4 +2,8 @@ language: node_js
 node_js:
   - 'stable'
   - '8'
+
+env:
+  - NODE_ICU_DATA=node_modules\full-icu
+
 after_success: npm run coveralls
