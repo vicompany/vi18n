@@ -34,6 +34,7 @@
     "eslint": "^4.9.0",
     "eslint-config-vi": "^8.1.0",
     "full-icu": "^1.2.1",
+    "icu4c-data": "^0.60.2",
     "nyc": "^11.2.1",
     "sinon": "^4.0.1"
   },
