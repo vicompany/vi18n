@@ -14,9 +14,8 @@
     "preversion": "npm run lint && npm run test",
     "postversion": "git push --follow-tags",
     "prepublishOnly": "npm run build",
-    "testDebug": "node --icu-data-dir=node_modules/full-icu node_modules/ava/profile.js ./test/formatCurrency.test.js",
-    "test": "cross-env NODE_ICU_DATA=node_modules/full-icu nyc ava",
-    "watch": "cross-env NODE_ICU_DATA=node_modules/full-icu ava --watch"
+    "test": "nyc ava",
+    "watch": "ava --watch"
   },
   "keywords": [
     "i18n",
